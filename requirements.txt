@@ -1,0 +1,7 @@
+torch>=2.0
+transformers>=4.40
+numpy>=1.23
+pytest>=7.0
+
+# Optional, used by train_proof.py for WikiText-2. The script has a fallback.
+datasets>=2.0

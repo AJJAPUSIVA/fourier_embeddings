@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fourier Embeddings — Wave-Based Token Codec</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0f; color: #e0e0e0; padding: 2rem;
+            line-height: 1.6;
+        }
+        h1 { color: #7dd3fc; margin-bottom: 0.5rem; font-size: 2rem; }
+        h2 { color: #a5b4fc; margin: 2rem 0 1rem; font-size: 1.4rem; }
+        h3 { color: #c4b5fd; margin: 1.5rem 0 0.5rem; }
+        .subtitle { color: #94a3b8; margin-bottom: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 1rem 0; }
+        .card { 
+            background: #1a1a2e; border-radius: 12px; padding: 1.5rem;
+            border: 1px solid #2a2a4e;
+        }
+        .card-header { color: #7dd3fc; font-weight: 600; margin-bottom: 1rem; }
+        canvas { width: 100%; height: 200px; border-radius: 8px; background: #0f0f1a; }
+        input[type="text"] {
+            background: #1a1a2e; border: 1px solid #3a3a5e; color: #e0e0e0;
+            padding: 0.7rem 1rem; border-radius: 8px; width: 100%; font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+        input[type="range"] { width: 100%; margin: 0.5rem 0; }
+        .stats { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem; margin: 1rem 0;
+        }
+        .stat { 
+            background: #1e1e3a; padding: 1rem; border-radius: 8px; text-align: center;
+        }
+        .stat-value { font-size: 1.5rem; font-weight: 700; color: #7dd3fc; }
+        .stat-label { font-size: 0.8rem; color: #94a3b8; margin-top: 0.3rem; }
+        .comparison-table {
+            width: 100%; border-collapse: collapse; margin: 1rem 0;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid #2a2a4e;
+        }
+        .comparison-table th { color: #a5b4fc; font-weight: 600; }
+        .comparison-table tr:hover { background: #1a1a2e; }
+        .highlight { color: #34d399; font-weight: 600; }
+        .warning { color: #fbbf24; }
+        .danger { color: #f87171; }
+        .wave-display { 
+            font-family: monospace; background: #0f0f1a; padding: 1rem;
+            border-radius: 8px; overflow-x: auto; margin: 0.5rem 0;
+            font-size: 0.85rem; line-height: 1.4;
+        }
+        .byte-bar {
+            height: 24px; background: #3b82f6; border-radius: 4px; margin: 2px 0;
+            transition: width 0.3s; display: flex; align-items: center;
+            padding-left: 8px; font-size: 0.75rem; min-width: 2px;
+        }
+        .byte-bar.truncated { background: #ef4444; }
+        .formula { 
+            font-family: 'Courier New', monospace; background: #1a1a2e;
+            padding: 1rem; border-radius: 8px; border-left: 3px solid #7dd3fc;
+            margin: 1rem 0;
+        }
+        .section-divider { 
+            border: none; border-top: 1px solid #2a2a4e; margin: 3rem 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🌊 Fourier Embeddings</h1>
+    <p class="subtitle">A wave-based alternative to the Kronecker byte codec — Problem #4, ERA V5 Session 7</p>
+
+    <!-- Core Idea -->
+    <h2>1. The Core Idea: Bytes as Waves</h2>
+    <div class="formula">
+        <strong>Kronecker:</strong> κ(b) = (1/√L) · vec( Σ one_hot(byte_p) ⊗ one_hot(position_p) ) → <span class="warning">sparse, D=8192, ceiling at 32</span><br><br>
+        <strong>Fourier:</strong>&nbsp;&nbsp; φ(b) = (1/√L) · Σ wave(byte_p, position_p) → <span class="highlight">dense, D=512, configurable buffer bound</span>
+    </div>
+
+    <!-- Interactive Demo -->
+    <h2>2. Interactive: Type a Word</h2>
+    <div class="card">
+        <input type="text" id="wordInput" value="hello" placeholder="Type any word..." oninput="updateDemo()">
+        <div class="stats" id="wordStats"></div>
+        <div id="byteBreakdown"></div>
+        <canvas id="waveCanvas"></canvas>
+    </div>
+
+    <!-- Comparison -->
+    <h2>3. The 32-Byte Problem — Decoupled from Projection Size</h2>
+    <div class="grid">
+        <div class="card">
+            <div class="card-header">Kronecker (pos_dim=32)</div>
+            <div id="kroneckerDemo"></div>
+        </div>
+        <div class="card">
+            <div class="card-header">Fourier (demo uses full supplied bytes)</div>
+            <div id="fourierDemo"></div>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Parameter Comparison -->
+    <h2>4. Parameter Savings</h2>
+    <div class="card">
+        <div style="margin-bottom: 1rem;">
+            <label>Vocabulary size: <span id="vocabLabel">131,072</span></label>
+            <input type="range" id="vocabSlider" min="30000" max="500000" value="131072" step="1000" oninput="updateParams()">
+            <label>d_model: <span id="dmodelLabel">8,096</span></label>
+            <input type="range" id="dmodelSlider" min="256" max="16384" value="8096" step="256" oninput="updateParams()">
+        </div>
+        <table class="comparison-table" id="paramTable"></table>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Information Density -->
+    <h2>5. Information Density</h2>
+    <div class="card">
+        <p>Kronecker places L ones in an 8192-dim vector. Fourier fills ALL 512 dims with wave values.</p>
+        <div id="densityBars" style="margin-top: 1rem;"></div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Collision Demo -->
+    <h2>6. Collision Test: Hindi Words</h2>
+    <div class="card">
+        <div class="wave-display" id="collisionDemo"></div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Summary -->
+    <h2>7. Summary</h2>
+    <table class="comparison-table">
+        <tr><th>Property</th><th>Dense</th><th>Kronecker</th><th>Fourier (ours)</th></tr>
+        <tr><td>Params scale with</td><td>V × d_model</td><td>D × d_model</td><td class="highlight">D × d_model</td></tr>
+        <tr><td>Codec output D</td><td>N/A</td><td>8,192</td><td class="highlight">512</td></tr>
+        <tr><td>Projection (V5)</td><td>1,061M</td><td>66.3M</td><td class="highlight">4.1M</td></tr>
+        <tr><td>Configured token bound</td><td>Tokenizer-defined</td><td class="danger">32 bytes</td><td class="highlight">256 bytes (default)</td></tr>
+        <tr><td>Collision status</td><td>Learned rows</td><td class="danger">Exact after truncation</td><td class="highlight">Must be measured</td></tr>
+        <tr><td>Info density</td><td>N/A</td><td class="warning">~0.1%</td><td class="highlight">100%</td></tr>
+        <tr><td>Orthographic structure</td><td>✗</td><td>✓</td><td class="highlight">✓</td></tr>
+    </table>
+</div>
+
+<script>
+// === Fourier codec in JavaScript (matches the Python implementation) ===
+
+function buildFreqTable(D) {
+    const halfD = D / 2;
+    const alpha = [], beta = [];
+    for (let k = 0; k < halfD; k++) {
+        alpha.push(k === 0 ? 0 : (73 * k + 19) % 257);
+        beta.push(k === 0 ? 0 : (151 * k + 37) % 4099);
+    }
+    return { alpha, beta };
+}
+
+function fourierWave(byteVal, position, freqTable, D, Pmax=4099) {
+    const halfD = D / 2;
+    const vNorm = byteVal / 257;
+    const pNorm = position / Pmax;
+    const wave = new Float32Array(D);
+    for (let k = 0; k < halfD; k++) {
+        const phase = 2 * Math.PI * vNorm * freqTable.alpha[k] + 
+                      2 * Math.PI * pNorm * freqTable.beta[k];
+        wave[2*k] = Math.sin(phase);
+        wave[2*k+1] = Math.cos(phase);
+    }
+    return wave;
+}
+
+function fourierCodec(bytes, D=512) {
+    const L = bytes.length;
+    if (L === 0) return new Float32Array(D);
+    const freqTable = buildFreqTable(D);
+    const out = new Float32Array(D);
+    const scale = 1 / Math.sqrt(L);
+    
+    for (let p = 0; p < L; p++) {
+        const wave = fourierWave(bytes[p], p, freqTable, D);
+        for (let d = 0; d < D; d++) {
+            out[d] += wave[d] * scale;
+        }
+    }
+    
+    // Z-normalize
+    let mean = 0;
+    for (let d = 0; d < D; d++) mean += out[d];
+    mean /= D;
+    let variance = 0;
+    for (let d = 0; d < D; d++) variance += (out[d] - mean) ** 2;
+    const std = Math.sqrt(variance / (D - 1)) + 1e-6;
+    for (let d = 0; d < D; d++) out[d] = (out[d] - mean) / std;
+    
+    return out;
+}
+
+function textToBytes(text) {
+    return Array.from(new TextEncoder().encode(text));
+}
+
+function cosineSim(a, b) {
+    let dot = 0, normA = 0, normB = 0;
+    for (let i = 0; i < a.length; i++) {
+        dot += a[i] * b[i];
+        normA += a[i] * a[i];
+        normB += b[i] * b[i];
+    }
+    return dot / (Math.sqrt(normA) * Math.sqrt(normB) + 1e-12);
+}
+
+// === UI Updates ===
+
+function updateDemo() {
+    const word = document.getElementById('wordInput').value || 'hello';
+    const bytes = textToBytes(word);
+    const D = 512;
+    
+    // Stats
+    const statsHtml = `
+        <div class="stat"><div class="stat-value">${bytes.length}</div><div class="stat-label">UTF-8 bytes</div></div>
+        <div class="stat"><div class="stat-value">${word.length}</div><div class="stat-label">Characters</div></div>
+        <div class="stat"><div class="stat-value">${D}</div><div class="stat-label">Output dims (all used)</div></div>
+        <div class="stat"><div class="stat-value">${bytes.length > 32 ? '⚠️ TRUNCATED' : '✓ OK'}</div><div class="stat-label">Kronecker (32 limit)</div></div>
+        <div class="stat"><div class="stat-value">✓ OK</div><div class="stat-label">Fourier (no limit)</div></div>
+    `;
+    document.getElementById('wordStats').innerHTML = statsHtml;
+    
+    // Byte breakdown
+    let breakdown = '<div style="margin: 1rem 0;">';
+    const maxBar = Math.max(32, bytes.length);
+    for (let i = 0; i < bytes.length; i++) {
+        const char = bytes[i] >= 32 && bytes[i] < 127 ? String.fromCharCode(bytes[i]) : '·';
+        const width = (1 / maxBar * 100);
+        const isTruncated = i >= 32;
+        breakdown += `<div class="byte-bar ${isTruncated ? 'truncated' : ''}" style="width: ${width}%">${char}(${bytes[i]})</div>`;
+    }
+    if (bytes.length > 32) {
+        breakdown += `<div style="color: #f87171; margin-top: 0.5rem;">⚠️ Kronecker drops bytes ${33}–${bytes.length} (shown in red)</div>`;
+    }
+    breakdown += '</div>';
+    document.getElementById('byteBreakdown').innerHTML = breakdown;
+    
+    // Wave canvas
+    drawWave(bytes, D);
+}
+
+function drawWave(bytes, D) {
+    const canvas = document.getElementById('waveCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth * 2;
+    canvas.height = 400;
+    ctx.scale(2, 2);
+    const w = canvas.offsetWidth;
+    const h = 200;
+    
+    ctx.fillStyle = '#0f0f1a';
+    ctx.fillRect(0, 0, w, h);
+    
+    const code = fourierCodec(bytes, D);
+    
+    // Draw the first 200 dimensions as a waveform
+    const dims = Math.min(200, D);
+    ctx.strokeStyle = '#7dd3fc';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let i = 0; i < dims; i++) {
+        const x = (i / dims) * w;
+        const y = h/2 - code[i] * h/6;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    
+    // Label
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '11px monospace';
+    ctx.fillText(`Fourier codec output (first ${dims} of ${D} dims) — dense waveform`, 10, 15);
+    ctx.fillText(`All ${D} dimensions carry information (100% density)`, 10, h - 10);
+    
+    // Draw zero line
+    ctx.strokeStyle = '#3a3a5e';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(0, h/2);
+    ctx.lineTo(w, h/2);
+    ctx.stroke();
+}
+
+function updateParams() {
+    const V = parseInt(document.getElementById('vocabSlider').value);
+    const dModel = parseInt(document.getElementById('dmodelSlider').value);
+    document.getElementById('vocabLabel').textContent = V.toLocaleString();
+    document.getElementById('dmodelLabel').textContent = dModel.toLocaleString();
+    
+    const dense = V * dModel;
+    const kronD = 8192;
+    const kron = kronD * dModel;
+    const fourD = 512;
+    const four = fourD * dModel;
+    
+    const html = `
+        <tr><th>Method</th><th>Codec D</th><th>Projection Params</th><th>vs Dense</th></tr>
+        <tr><td>Dense (nn.Embedding)</td><td>N/A</td><td>${dense.toLocaleString()}</td><td>1.0×</td></tr>
+        <tr><td>Kronecker</td><td>8,192</td><td>${kron.toLocaleString()}</td><td>${(dense/kron).toFixed(1)}× smaller</td></tr>
+        <tr><td class="highlight">Fourier</td><td class="highlight">512</td><td class="highlight">${four.toLocaleString()}</td><td class="highlight">${(dense/four).toFixed(0)}× smaller</td></tr>
+    `;
+    document.getElementById('paramTable').innerHTML = html;
+}
+
+function updateDensity() {
+    const words = ['hello', 'train', 'भारत', 'తెలుగు', 'internationalization'];
+    let html = '';
+    for (const word of words) {
+        const bytes = textToBytes(word);
+        const L = bytes.length;
+        const kronNnz = Math.min(L, 32);
+        const kronD = 8192;
+        const fourD = 512;
+        
+        const kronPct = (kronNnz / kronD * 100).toFixed(2);
+        const fourPct = 100;
+        
+        html += `<div style="margin: 0.8rem 0;">
+            <strong>${word}</strong> (${L} bytes)
+            <div style="display: flex; gap: 1rem; margin-top: 0.3rem;">
+                <div style="flex: 1;">
+                    <div style="font-size: 0.8rem; color: #94a3b8;">Kronecker: ${kronNnz}/${kronD} dims used (${kronPct}%)</div>
+                    <div style="background: #1e1e3a; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="background: #fbbf24; height: 100%; width: ${kronPct}%;"></div>
+                    </div>
+                </div>
+                <div style="flex: 1;">
+                    <div style="font-size: 0.8rem; color: #94a3b8;">Fourier: ${fourD}/${fourD} dims used (100%)</div>
+                    <div style="background: #1e1e3a; height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="background: #34d399; height: 100%; width: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+    document.getElementById('densityBars').innerHTML = html;
+}
+
+function updateCollision() {
+    const w1 = 'अंतर्राष्ट्रीयकरण';
+    const w2 = 'अंतर्राष्ट्रीयता';
+    const b1 = textToBytes(w1);
+    const b2 = textToBytes(w2);
+    
+    // Check first 32 bytes
+    let first32Match = true;
+    for (let i = 0; i < 32 && i < b1.length && i < b2.length; i++) {
+        if (b1[i] !== b2[i]) { first32Match = false; break; }
+    }
+    
+    // Fourier codes
+    const code1 = fourierCodec(b1, 512);
+    const code2 = fourierCodec(b2, 512);
+    const cos = cosineSim(code1, code2);
+    
+    const html = `
+<strong>Word 1:</strong> "${w1}" (${b1.length} bytes)
+<strong>Word 2:</strong> "${w2}" (${b2.length} bytes)
+
+<strong>First 32 bytes identical:</strong> ${first32Match ? '<span class="danger">YES</span>' : 'NO'}
+
+<strong>Kronecker (pos_dim=32):</strong> <span class="danger">COLLISION — identical codes — model CANNOT distinguish these words ❌</span>
+
+<strong>Fourier (D=512):</strong> <span class="highlight">cosine = ${cos.toFixed(4)} — similar but DISTINCT ✓</span>
+    (High similarity because they share a long prefix, but the differing suffix bytes 
+     at positions 33+ produce different wave contributions → different codes)
+    `;
+    document.getElementById('collisionDemo').innerHTML = html;
+}
+
+function updateKroneckerFourier() {
+    const words = ['hello', 'नमस्ते', 'అంతర్జాతీయీకరణ'];
+    
+    let kronHtml = '', fourHtml = '';
+    for (const word of words) {
+        const bytes = textToBytes(word);
+        const keeps = Math.min(bytes.length, 32);
+        const drops = Math.max(0, bytes.length - 32);
+        
+        kronHtml += `<div style="margin: 0.5rem 0;">
+            <strong>"${word}"</strong> — ${bytes.length} bytes<br>
+            Keeps: ${keeps} | ${drops > 0 ? `<span class="danger">Drops: ${drops} ⚠️</span>` : '<span class="highlight">All kept ✓</span>'}
+        </div>`;
+        
+        fourHtml += `<div style="margin: 0.5rem 0;">
+            <strong>"${word}"</strong> — ${bytes.length} bytes<br>
+            <span class="highlight">Demo supplies all ${bytes.length} bytes; module default bound is 256</span>
+        </div>`;
+    }
+    
+    document.getElementById('kroneckerDemo').innerHTML = kronHtml;
+    document.getElementById('fourierDemo').innerHTML = fourHtml;
+}
+
+// Initialize
+updateDemo();
+updateParams();
+updateDensity();
+updateCollision();
+updateKroneckerFourier();
+</script>
+</body>
+</html>
