@@ -12,6 +12,7 @@ from fourier_embedding.codec import (
     fourier_codec,
     fourier_encode_single,
     fourier_output_dim,
+    fourier_wave,
     _build_frequency_table,
 )
 
@@ -58,6 +59,40 @@ def test_rejects_invalid_lengths():
         fourier_codec(buf, torch.tensor([5]), D=64)
     with pytest.raises(ValueError):
         fourier_codec(buf, torch.tensor([-1]), D=64)
+
+
+def test_rejects_invalid_frequency_chunk_size():
+    buf = torch.zeros((1, 4), dtype=torch.uint8)
+    with pytest.raises(ValueError):
+        fourier_codec(buf, torch.tensor([2]), D=64, frequency_chunk_size=0)
+
+
+def test_chunked_codec_matches_full_wave_reference():
+    """The bounded-memory path must match the original full wave formula."""
+    torch.manual_seed(7)
+    batch, max_len, D = 5, 13, 64
+    byte_seqs = torch.randint(0, 256, (batch, max_len), dtype=torch.uint8)
+    lengths = torch.tensor([13, 9, 5, 1, 0], dtype=torch.long)
+    freq = _build_frequency_table(D)
+
+    positions = torch.arange(max_len).unsqueeze(0).expand(batch, -1)
+    waves = fourier_wave(byte_seqs.long(), positions, freq)
+    valid = positions < lengths.unsqueeze(1)
+    reference = (waves * valid.unsqueeze(-1)).sum(dim=1)
+    reference *= torch.rsqrt(lengths.clamp_min(1).float()).unsqueeze(1)
+    mean = reference.mean(dim=-1, keepdim=True)
+    std = (reference - mean).std(dim=-1, keepdim=True) + 1e-6
+    reference = (reference - mean) / std
+
+    for chunk_size in (1, 3, 8, 32):
+        actual = fourier_codec(
+            byte_seqs,
+            lengths,
+            D=D,
+            freq_table=freq,
+            frequency_chunk_size=chunk_size,
+        )
+        torch.testing.assert_close(actual, reference, atol=2e-5, rtol=2e-5)
 
 
 # ============ Core properties ============

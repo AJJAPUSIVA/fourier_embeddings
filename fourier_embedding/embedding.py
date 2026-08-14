@@ -51,6 +51,10 @@ class FourierEmbedding(nn.Module):
         Scale by 1/sqrt(L).
     z_normalize : bool, default True
         Per-token z-normalization.
+    frequency_chunk_size : int, default 16
+        Complex frequency pairs evaluated simultaneously by the codec.
+    codec_batch_size : int, default 1024
+        Number of vocabulary rows encoded at once when building cached mode.
     """
 
     def __init__(
@@ -66,6 +70,8 @@ class FourierEmbedding(nn.Module):
         projection_init: Literal["normal", "xavier"] = "normal",
         length_normalize: bool = True,
         z_normalize: bool = True,
+        frequency_chunk_size: int = 16,
+        codec_batch_size: int = 1024,
     ):
         super().__init__()
         if D % 2 != 0:
@@ -80,9 +86,15 @@ class FourierEmbedding(nn.Module):
         self.mode = mode
         self.length_normalize = length_normalize
         self.z_normalize = z_normalize
+        self.frequency_chunk_size = frequency_chunk_size
+        self.codec_batch_size = codec_batch_size
 
         if max_byte_len <= 0:
             raise ValueError(f"max_byte_len must be positive; got {max_byte_len}")
+        if frequency_chunk_size <= 0:
+            raise ValueError("frequency_chunk_size must be positive")
+        if codec_batch_size <= 0:
+            raise ValueError("codec_batch_size must be positive")
 
         # Build byte buffer if not provided.
         if byte_buffer is None or length_buffer is None:
@@ -122,17 +134,18 @@ class FourierEmbedding(nn.Module):
         else:
             raise ValueError(f"projection_init must be 'normal' or 'xavier'; got {projection_init!r}")
 
-        # Cached mode: precompute full codec table
+        # Cached mode: precompute the table in bounded row batches. Building
+        # V x max_byte_len x D at once can otherwise exceed accelerator RAM.
         if mode == "cached":
             with torch.no_grad():
-                table = fourier_codec(
-                    self._byte_buffer,
-                    self._length_buffer,
-                    D=self.D,
-                    length_normalize=self.length_normalize,
-                    z_normalize=self.z_normalize,
-                    freq_table=self._freq_table,
-                )
+                chunks = []
+                for start in range(0, self.vocab_size, self.codec_batch_size):
+                    stop = min(start + self.codec_batch_size, self.vocab_size)
+                    chunks.append(self._encode_rows(
+                        self._byte_buffer[start:stop],
+                        self._length_buffer[start:stop],
+                    ))
+                table = torch.cat(chunks, dim=0)
             self.register_buffer("_codec_table", table, persistent=False)
 
     @property
@@ -143,22 +156,35 @@ class FourierEmbedding(nn.Module):
     def embedding_dim(self) -> int:
         return self.d_model
 
+    def _encode_rows(self, byte_rows: Tensor, lengths: Tensor) -> Tensor:
+        """Encode rows after trimming unused padded byte columns."""
+        active_len = int(lengths.max().item()) if lengths.numel() else 0
+        return fourier_codec(
+            byte_rows[:, :active_len],
+            lengths,
+            D=self.D,
+            length_normalize=self.length_normalize,
+            z_normalize=self.z_normalize,
+            freq_table=self._freq_table,
+            frequency_chunk_size=self.frequency_chunk_size,
+        )
+
     def _codec_lookup(self, input_ids: Tensor) -> Tensor:
         """Return (..., L, D) codec output for input_ids of shape (..., L)."""
         flat_ids = input_ids.reshape(-1)
         if self.mode == "cached":
             codec_out = self._codec_table.index_select(0, flat_ids)
         else:
-            bytes_all = self._byte_buffer.index_select(0, flat_ids)
-            lens_all = self._length_buffer.index_select(0, flat_ids)
-            codec_out = fourier_codec(
-                bytes_all,
-                lens_all,
-                D=self.D,
-                length_normalize=self.length_normalize,
-                z_normalize=self.z_normalize,
-                freq_table=self._freq_table,
+            # Repeated token IDs are common in language batches. Encode each
+            # distinct ID once, then gather occurrences back into sequence
+            # order. This preserves exact output while reducing codec work.
+            unique_ids, inverse = torch.unique(
+                flat_ids, sorted=False, return_inverse=True
             )
+            bytes_unique = self._byte_buffer.index_select(0, unique_ids)
+            lens_unique = self._length_buffer.index_select(0, unique_ids)
+            unique_codes = self._encode_rows(bytes_unique, lens_unique)
+            codec_out = unique_codes.index_select(0, inverse)
         return codec_out.view(*input_ids.shape, self.D)
 
     def forward(self, input_ids: Tensor) -> Tensor:
@@ -172,5 +198,6 @@ class FourierEmbedding(nn.Module):
     def extra_repr(self) -> str:
         return (
             f"vocab_size={self.vocab_size}, d_model={self.d_model}, "
-            f"D={self.D}, max_byte_len={self.max_byte_len}, mode={self.mode!r}"
+            f"D={self.D}, max_byte_len={self.max_byte_len}, mode={self.mode!r}, "
+            f"frequency_chunk_size={self.frequency_chunk_size}"
         )

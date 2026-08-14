@@ -141,6 +141,7 @@ def fourier_codec(
     eps: float = 1e-6,
     P_max: float = 4099.0,
     freq_table: Optional[Tensor] = None,
+    frequency_chunk_size: int = 16,
     out_dtype: Optional[torch.dtype] = None,
 ) -> Tensor:
     """
@@ -166,6 +167,10 @@ def fourier_codec(
         Maximum expected byte length for position normalization.
     freq_table : Tensor, optional
         Pre-built frequency table. If None, built on the fly.
+    frequency_chunk_size : int, default 16
+        Number of complex frequency pairs evaluated at once. Bounds the
+        temporary phase tensor to ``B * active_len * frequency_chunk_size``
+        elements instead of materializing ``B * max_len * D`` wave values.
     out_dtype : torch.dtype, optional
         Cast final result to this dtype.
     
@@ -173,8 +178,12 @@ def fourier_codec(
     -------
     Tensor of shape (B, D).
     """
-    if D % 2 != 0:
-        raise ValueError(f"D must be even; got {D}")
+    if D <= 0 or D % 2 != 0:
+        raise ValueError(f"D must be a positive even integer; got {D}")
+    if frequency_chunk_size <= 0:
+        raise ValueError(
+            f"frequency_chunk_size must be positive; got {frequency_chunk_size}"
+        )
     if byte_sequences.dim() != 2:
         raise ValueError(
             f"byte_sequences must be 2D (B, max_len); got {tuple(byte_sequences.shape)}"
@@ -192,21 +201,48 @@ def fourier_codec(
     if freq_table is None:
         freq_table = _build_frequency_table(D, device=device)
     freq_table = freq_table.to(device)
+    if freq_table.shape != (D // 2, 2):
+        raise ValueError(
+            f"freq_table must have shape ({D // 2}, 2); got {tuple(freq_table.shape)}"
+        )
 
-    bytes_long = byte_sequences.to(torch.long)
+    # Ignore padded columns beyond the longest real sequence in this batch.
+    # This is especially important for tokenizer buffers configured at 256
+    # bytes when typical tokens contain only a handful of bytes.
+    active_len = int(lens_long.max().item()) if B else 0
+    bytes_float = byte_sequences[:, :active_len].to(torch.float32) / 257.0
 
-    # Positions: 0, 1, 2, ... for each byte
-    positions = torch.arange(max_len, device=device).unsqueeze(0).expand(B, -1)
+    positions = torch.arange(active_len, device=device, dtype=torch.float32)
+    positions = positions.unsqueeze(0).expand(B, -1)
+    positions = positions / P_max
+    valid = (
+        torch.arange(active_len, device=device).unsqueeze(0)
+        < lens_long.unsqueeze(1)
+    )
 
-    # Compute wave for all positions: (B, max_len, D)
-    waves = fourier_wave(bytes_long, positions, freq_table, P_max=P_max)
+    # Accumulate sampled Fourier coefficients in bounded frequency chunks.
+    # ``out`` is the only B x D allocation. The largest temporary is
+    # B x active_len x frequency_chunk_size rather than B x max_len x D.
+    out = torch.empty((B, D), device=device, dtype=torch.float32)
+    half_D = D // 2
+    byte_term = bytes_float.unsqueeze(-1)
+    position_term = positions.unsqueeze(-1)
+    mask = valid.unsqueeze(-1)
 
-    # Mask out padding positions
-    valid = positions < lens_long.unsqueeze(1)  # (B, max_len) bool
-    waves = waves * valid.unsqueeze(-1).float()
-
-    # Sum across positions: (B, D)
-    out = waves.sum(dim=1)
+    for start in range(0, half_D, frequency_chunk_size):
+        stop = min(start + frequency_chunk_size, half_D)
+        alpha = freq_table[start:stop, 0]
+        beta = freq_table[start:stop, 1]
+        phase = 2 * math.pi * (
+            byte_term * alpha.view(1, 1, -1)
+            + position_term * beta.view(1, 1, -1)
+        )
+        # Mask after sin/cos: padded byte-buffer values are not signal, and
+        # cos(0)=1 would otherwise contribute at padded positions.
+        sin_sum = torch.sin(phase).masked_fill(~mask, 0.0).sum(dim=1)
+        cos_sum = torch.cos(phase).masked_fill(~mask, 0.0).sum(dim=1)
+        out[:, 2 * start : 2 * stop : 2] = sin_sum
+        out[:, 2 * start + 1 : 2 * stop : 2] = cos_sum
 
     # Length normalize: divide by sqrt(L)
     if length_normalize:

@@ -64,6 +64,21 @@ embedding(token) = Linear(D, d_model)(φ(token))
 
 Only the projection is trained. The frequencies are fixed and reproducible.
 
+### Bounded-memory execution
+
+The implementation does not materialize the full
+`[input_tokens, max_byte_len, D]` wave tensor. It:
+
+1. encodes each distinct token ID once per dynamic lookup;
+2. trims byte buffers to the longest actual token in that lookup;
+3. evaluates complex frequencies in configurable chunks; and
+4. builds cached vocabulary tables in bounded row batches.
+
+With `frequency_chunk_size=C`, the largest phase temporary is approximately
+`unique_tokens × active_byte_length × C` fp32 values, rather than
+`input_tokens × max_byte_len × D`. The output codes remain mathematically
+equivalent to the unchunked formulation; regression tests compare both paths.
+
 ## What is and is not proved
 
 ### Established directly
