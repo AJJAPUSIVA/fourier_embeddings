@@ -127,7 +127,8 @@ equivalent to the unchunked formulation; regression tests compare both paths.
 │   └── test_math_reference.py
 ├── experiments/
 │   ├── train_proof.py    # matched tiny-transformer comparison
-│   └── analysis.py       # codec analysis
+│   ├── analysis.py       # codec analysis
+│   └── collision_probe.py # vocabulary-scale collision report
 └── index.html                 # interactive explanation
 ```
 
@@ -169,6 +170,24 @@ Run lightweight analysis:
 ```bash
 python experiments/analysis.py
 ```
+
+Run exact and near-collision analysis:
+
+```bash
+python experiments/collision_probe.py \
+  --tokenizer gpt2 \
+  --dimensions 128 256 512 \
+  --near-max-tokens 10000
+```
+
+Without local Python, open **Actions → Fourier collision analysis → Run
+workflow**. The workflow uploads `collision_results.json` and
+`collision_summary.md`. Collision groups exclude duplicate tokenizer entries
+that have identical byte strings; near-collision statistics compare only
+distinct byte sequences.
+Exact and quantized collision counts cover the full requested vocabulary. The
+more expensive cosine search is exact within the deterministic prefix selected
+by `--near-max-tokens`; increase that value to cover the complete vocabulary.
 
 Run the matched training experiment:
 

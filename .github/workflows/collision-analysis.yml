@@ -1,0 +1,75 @@
+name: Fourier collision analysis
+
+on:
+  workflow_dispatch:
+    inputs:
+      dimensions:
+        description: "Space-separated even codec dimensions"
+        required: true
+        default: "128 256 512"
+      max_tokens:
+        description: "Maximum tokenizer IDs to analyze"
+        required: true
+        default: "50257"
+      near_max_tokens:
+        description: "Tokens used for exact all-pairs cosine analysis"
+        required: true
+        default: "10000"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      DIMENSIONS: ${{ inputs.dimensions }}
+      MAX_TOKENS: ${{ inputs.max_tokens }}
+      NEAR_MAX_TOKENS: ${{ inputs.near_max_tokens }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Validate workflow inputs
+        shell: bash
+        run: |
+          [[ "$DIMENSIONS" =~ ^[0-9]+([[:space:]]+[0-9]+)*$ ]]
+          [[ "$MAX_TOKENS" =~ ^[0-9]+$ ]]
+          [[ "$NEAR_MAX_TOKENS" =~ ^[0-9]+$ ]]
+
+      - name: Install project
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Run collision analysis
+        shell: bash
+        run: |
+          read -ra dims <<< "$DIMENSIONS"
+          python experiments/collision_probe.py \
+            --tokenizer gpt2 \
+            --dimensions "${dims[@]}" \
+            --max-tokens "$MAX_TOKENS" \
+            --near-max-tokens "$NEAR_MAX_TOKENS" \
+            --output collision_results.json \
+            --summary collision_summary.md
+
+      - name: Add report to job summary
+        run: cat collision_summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload collision report
+        uses: actions/upload-artifact@v4
+        with:
+          name: fourier-collision-results
+          path: |
+            collision_results.json
+            collision_summary.md
+          retention-days: 30
