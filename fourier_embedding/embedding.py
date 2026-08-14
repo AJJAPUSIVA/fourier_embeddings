@@ -12,22 +12,15 @@ Same contract as KroneckerEmbedding and nn.Embedding:
 from __future__ import annotations
 
 import math
-from typing import Dict, Literal, Optional, Tuple
+from typing import Literal, Optional
 
 import torch
 import torch.nn as nn
 from torch import Tensor
 
-from .codec import _build_frequency_table, fourier_codec, fourier_output_dim
+from .codec import _build_frequency_table, fourier_codec
 
-# Reuse the tokenizer utils from kronecker_embeddings
-try:
-    from kronecker_embeddings.tokenizer_utils import build_byte_buffer, utf8_safe_truncate
-except ImportError:
-    import sys
-    import os
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-    from kronecker_embeddings.tokenizer_utils import build_byte_buffer, utf8_safe_truncate
+from kronecker_embeddings.tokenizer_utils import build_byte_buffer
 
 
 class FourierEmbedding(nn.Module):

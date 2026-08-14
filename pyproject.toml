@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fourier-embeddings"
+version = "0.1.0"
+description = "Sampled 2-D Fourier features for byte-position token embeddings"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.0",
+    "transformers>=4.40",
+    "numpy>=1.23",
+    "kronecker-embeddings>=0.1.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "datasets>=2.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["fourier_embedding*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"

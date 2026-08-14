@@ -1,0 +1,259 @@
+From 81ec7b99b63430a9f7ac3ab54aff981ee6ddf6df Mon Sep 17 00:00:00 2001
+From: Codex Patch <codex@example.invalid>
+Date: Fri, 14 Aug 2026 08:41:08 +0000
+Subject: [PATCH] Fix Python package and import structure
+
+---
+ README.md                                     | 31 ++++++++++++-------
+ analysis.py => experiments/analysis.py        |  5 ---
+ train_proof.py => experiments/train_proof.py  |  5 ---
+ __init__.py => fourier_embedding/__init__.py  |  4 +--
+ codec.py => fourier_embedding/codec.py        |  0
+ .../embedding.py                              | 13 ++------
+ pyproject.toml                                | 29 +++++++++++++++++
+ requirements.txt                              |  1 +
+ test_codec.py => tests/test_codec.py          |  6 ----
+ .../test_math_reference.py                    |  0
+ 10 files changed, 54 insertions(+), 40 deletions(-)
+ rename analysis.py => experiments/analysis.py (98%)
+ rename train_proof.py => experiments/train_proof.py (99%)
+ rename __init__.py => fourier_embedding/__init__.py (74%)
+ rename codec.py => fourier_embedding/codec.py (100%)
+ rename embedding.py => fourier_embedding/embedding.py (92%)
+ create mode 100644 pyproject.toml
+ rename test_codec.py => tests/test_codec.py (98%)
+ rename test_math_reference.py => tests/test_math_reference.py (100%)
+
+diff --git a/README.md b/README.md
+index af65856..a06d919 100644
+--- a/README.md
++++ b/README.md
+@@ -99,14 +99,21 @@ Only the projection is trained. The frequencies are fixed and reproducible.
+ ## Repository layout
+ 
+ ```text
+-fourier_embedding/
+-├── __init__.py
+-├── codec.py          # deterministic 2-D Fourier feature codec
+-├── embedding.py      # nn.Embedding-compatible wrapper
+-├── test_codec.py     # unit and adversarial regression tests
+-├── train_proof.py    # matched tiny-transformer comparison
+-├── analysis.py       # parameter, byte-length, and similarity analysis
+-└── index.html        # interactive explanation
++.
++├── pyproject.toml
++├── README.md
++├── requirements.txt
++├── fourier_embedding/
++│   ├── __init__.py
++│   ├── codec.py          # deterministic 2-D Fourier feature codec
++│   └── embedding.py      # nn.Embedding-compatible wrapper
++├── tests/
++│   ├── test_codec.py     # PyTorch and adversarial regression tests
++│   └── test_math_reference.py
++├── experiments/
++│   ├── train_proof.py    # matched tiny-transformer comparison
++│   └── analysis.py       # codec analysis
++└── index.html                 # interactive explanation
+ ```
+ 
+ ## Usage
+@@ -133,25 +140,25 @@ out = emb(ids)  # (1, sequence_length, 768)
+ Install dependencies:
+ 
+ ```bash
+-pip install torch transformers numpy pytest
++python -m pip install -e ".[dev]"
+ ```
+ 
+ Run codec tests:
+ 
+ ```bash
+-pytest -q fourier_embedding/test_codec.py
++python -m pytest -q
+ ```
+ 
+ Run lightweight analysis:
+ 
+ ```bash
+-python fourier_embedding/analysis.py
++python experiments/analysis.py
+ ```
+ 
+ Run the matched training experiment:
+ 
+ ```bash
+-python fourier_embedding/train_proof.py
++python experiments/train_proof.py
+ ```
+ 
+ The training comparison keeps the tokenizer, corpus, transformer shape,
+diff --git a/analysis.py b/experiments/analysis.py
+similarity index 98%
+rename from analysis.py
+rename to experiments/analysis.py
+index 05a3e13..166f4df 100644
+--- a/analysis.py
++++ b/experiments/analysis.py
+@@ -14,11 +14,6 @@ from pathlib import Path
+ import torch
+ import numpy as np
+ 
+-import sys
+-import os
+-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+-
+ from fourier_embedding.codec import fourier_encode_single, fourier_codec, _build_frequency_table
+ 
+ 
+diff --git a/train_proof.py b/experiments/train_proof.py
+similarity index 99%
+rename from train_proof.py
+rename to experiments/train_proof.py
+index 9ec4f0a..a81f39a 100644
+--- a/train_proof.py
++++ b/experiments/train_proof.py
+@@ -27,11 +27,6 @@ import torch.nn as nn
+ import torch.nn.functional as F
+ from torch import Tensor
+ 
+-import sys
+-import os
+-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+-
+ from kronecker_embeddings import KroneckerEmbedding
+ from fourier_embedding import FourierEmbedding
+ 
+diff --git a/__init__.py b/fourier_embedding/__init__.py
+similarity index 74%
+rename from __init__.py
+rename to fourier_embedding/__init__.py
+index b522fd3..73f7775 100644
+--- a/__init__.py
++++ b/fourier_embedding/__init__.py
+@@ -2,8 +2,8 @@
+ fourier_embedding — A Fourier-wave alternative to the Kronecker byte codec.
+ 
+ Each byte is represented as a sinusoidal waveform rather than a one-hot vector.
+-Bytes superpose (sum) into a fixed-D output regardless of token length, with no
+-pos_dim ceiling and no wasted dimensions for short tokens.
++Bytes superpose into a fixed-D output. The codec dimension is independent of
++the configured tokenizer byte-buffer bound.
+ """
+ 
+ from .codec import (
+diff --git a/codec.py b/fourier_embedding/codec.py
+similarity index 100%
+rename from codec.py
+rename to fourier_embedding/codec.py
+diff --git a/embedding.py b/fourier_embedding/embedding.py
+similarity index 92%
+rename from embedding.py
+rename to fourier_embedding/embedding.py
+index ed4245b..0057109 100644
+--- a/embedding.py
++++ b/fourier_embedding/embedding.py
+@@ -12,22 +12,15 @@ Same contract as KroneckerEmbedding and nn.Embedding:
+ from __future__ import annotations
+ 
+ import math
+-from typing import Dict, Literal, Optional, Tuple
++from typing import Literal, Optional
+ 
+ import torch
+ import torch.nn as nn
+ from torch import Tensor
+ 
+-from .codec import _build_frequency_table, fourier_codec, fourier_output_dim
++from .codec import _build_frequency_table, fourier_codec
+ 
+-# Reuse the tokenizer utils from kronecker_embeddings
+-try:
+-    from kronecker_embeddings.tokenizer_utils import build_byte_buffer, utf8_safe_truncate
+-except ImportError:
+-    import sys
+-    import os
+-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+-    from kronecker_embeddings.tokenizer_utils import build_byte_buffer, utf8_safe_truncate
++from kronecker_embeddings.tokenizer_utils import build_byte_buffer
+ 
+ 
+ class FourierEmbedding(nn.Module):
+diff --git a/pyproject.toml b/pyproject.toml
+new file mode 100644
+index 0000000..d43ad92
+--- /dev/null
++++ b/pyproject.toml
+@@ -0,0 +1,29 @@
++[build-system]
++requires = ["setuptools>=68", "wheel"]
++build-backend = "setuptools.build_meta"
++
++[project]
++name = "fourier-embeddings"
++version = "0.1.0"
++description = "Sampled 2-D Fourier features for byte-position token embeddings"
++readme = "README.md"
++requires-python = ">=3.10"
++dependencies = [
++    "torch>=2.0",
++    "transformers>=4.40",
++    "numpy>=1.23",
++    "kronecker-embeddings>=0.1.1",
++]
++
++[project.optional-dependencies]
++dev = [
++    "pytest>=7.0",
++    "datasets>=2.0",
++]
++
++[tool.setuptools.packages.find]
++include = ["fourier_embedding*"]
++
++[tool.pytest.ini_options]
++testpaths = ["tests"]
++addopts = "-v --tb=short"
+diff --git a/requirements.txt b/requirements.txt
+index eec3922..b8b10f6 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -2,6 +2,7 @@ torch>=2.0
+ transformers>=4.40
+ numpy>=1.23
+ pytest>=7.0
++kronecker-embeddings>=0.1.1
+ 
+ # Optional, used by train_proof.py for WikiText-2. The script has a fallback.
+ datasets>=2.0
+diff --git a/test_codec.py b/tests/test_codec.py
+similarity index 98%
+rename from test_codec.py
+rename to tests/test_codec.py
+index 361a8b2..a2793ce 100644
+--- a/test_codec.py
++++ b/tests/test_codec.py
+@@ -5,14 +5,8 @@ against the Kronecker codec.
+ 
+ from __future__ import annotations
+ 
+-import math
+ import pytest
+ import torch
+-import numpy as np
+-
+-import sys
+-import os
+-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+ 
+ from fourier_embedding.codec import (
+     fourier_codec,
+diff --git a/test_math_reference.py b/tests/test_math_reference.py
+similarity index 100%
+rename from test_math_reference.py
+rename to tests/test_math_reference.py
+-- 
+2.51.1
+

@@ -99,14 +99,21 @@ Only the projection is trained. The frequencies are fixed and reproducible.
 ## Repository layout
 
 ```text
-fourier_embedding/
-├── __init__.py
-├── codec.py          # deterministic 2-D Fourier feature codec
-├── embedding.py      # nn.Embedding-compatible wrapper
-├── test_codec.py     # unit and adversarial regression tests
-├── train_proof.py    # matched tiny-transformer comparison
-├── analysis.py       # parameter, byte-length, and similarity analysis
-└── index.html        # interactive explanation
+.
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+├── fourier_embedding/
+│   ├── __init__.py
+│   ├── codec.py          # deterministic 2-D Fourier feature codec
+│   └── embedding.py      # nn.Embedding-compatible wrapper
+├── tests/
+│   ├── test_codec.py     # PyTorch and adversarial regression tests
+│   └── test_math_reference.py
+├── experiments/
+│   ├── train_proof.py    # matched tiny-transformer comparison
+│   └── analysis.py       # codec analysis
+└── index.html                 # interactive explanation
 ```
 
 ## Usage
@@ -133,25 +140,25 @@ out = emb(ids)  # (1, sequence_length, 768)
 Install dependencies:
 
 ```bash
-pip install torch transformers numpy pytest
+python -m pip install -e ".[dev]"
 ```
 
 Run codec tests:
 
 ```bash
-pytest -q fourier_embedding/test_codec.py
+python -m pytest -q
 ```
 
 Run lightweight analysis:
 
 ```bash
-python fourier_embedding/analysis.py
+python experiments/analysis.py
 ```
 
 Run the matched training experiment:
 
 ```bash
-python fourier_embedding/train_proof.py
+python experiments/train_proof.py
 ```
 
 The training comparison keeps the tokenizer, corpus, transformer shape,

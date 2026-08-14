@@ -2,8 +2,8 @@
 fourier_embedding — A Fourier-wave alternative to the Kronecker byte codec.
 
 Each byte is represented as a sinusoidal waveform rather than a one-hot vector.
-Bytes superpose (sum) into a fixed-D output regardless of token length, with no
-pos_dim ceiling and no wasted dimensions for short tokens.
+Bytes superpose into a fixed-D output. The codec dimension is independent of
+the configured tokenizer byte-buffer bound.
 """
 
 from .codec import (

@@ -27,11 +27,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-
 from kronecker_embeddings import KroneckerEmbedding
 from fourier_embedding import FourierEmbedding
 
