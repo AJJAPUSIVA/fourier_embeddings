@@ -233,9 +233,12 @@ def fourier_codec(
         stop = min(start + frequency_chunk_size, half_D)
         alpha = freq_table[start:stop, 0]
         beta = freq_table[start:stop, 1]
-        phase = 2 * math.pi * (
-            byte_term * alpha.view(1, 1, -1)
-            + position_term * beta.view(1, 1, -1)
+        # Keep the same fp32 operation order as ``fourier_wave``. Factoring
+        # out 2*pi is algebraically equivalent but changes rounding at high
+        # frequencies and breaks output-equivalence guarantees.
+        phase = (
+            2 * math.pi * byte_term * alpha.view(1, 1, -1)
+            + 2 * math.pi * position_term * beta.view(1, 1, -1)
         )
         # Mask after sin/cos: padded byte-buffer values are not signal, and
         # cos(0)=1 would otherwise contribute at padded positions.
