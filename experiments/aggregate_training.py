@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 MATCHED_FIELDS = (
-    "dataset", "tokenizer", "deterministic", "model_config",
+    "dataset", "dataset_source", "dataset_revision", "tokenizer", "deterministic", "model_config",
     "training.max_tokens", "training.batch_size", "training.grad_accumulation",
     "training.max_steps", "training.learning_rate", "training.weight_decay",
 )

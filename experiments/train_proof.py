@@ -25,6 +25,11 @@ except ImportError:
     from experiments.determinism import configure_determinism, derived_seed, epoch_permutation, initialize_matched_model
 
 
+WIKITEXT_DATASET_ID = "Salesforce/wikitext"
+WIKITEXT_CONFIG = "wikitext-2-raw-v1"
+WIKITEXT_REVISION = "b08601e04326c79dfdd32d625aee71d232d685c3"
+
+
 @dataclass
 class ModelConfig:
     vocab_size: int
@@ -104,7 +109,12 @@ def load_token_ids(tokenizer, dataset: str, max_tokens: int) -> list[int]:
             from datasets import load_dataset
         except ImportError as exc:
             raise RuntimeError("--dataset wikitext requires the dev dependencies") from exc
-        records = load_dataset("wikitext", "wikitext-2-raw-v1", split="train")
+        records = load_dataset(
+            WIKITEXT_DATASET_ID,
+            WIKITEXT_CONFIG,
+            split="train",
+            revision=WIKITEXT_REVISION,
+        )
         text = "\n".join(value for value in records["text"] if value.strip())
     else:
         raise ValueError(f"Unsupported dataset: {dataset}")
@@ -240,7 +250,10 @@ def main(argv: Optional[list[str]] = None) -> dict:
     effective_batch = args.batch_size * args.grad_accumulation
     result = {
         "schema_version": 1, "embedding": args.embedding, "seed": args.seed,
-        "dataset": args.dataset, "tokenizer": args.tokenizer, "device": str(device),
+        "dataset": args.dataset,
+        "dataset_source": WIKITEXT_DATASET_ID if args.dataset == "wikitext" else "generated:synthetic-v1",
+        "dataset_revision": WIKITEXT_REVISION if args.dataset == "wikitext" else None,
+        "tokenizer": args.tokenizer, "device": str(device),
         "python": platform.python_version(), "torch": torch.__version__,
         "deterministic": not args.allow_nondeterministic, "model_config": asdict(cfg),
         "fourier_dim": args.fourier_dim if args.embedding == "fourier" else None,

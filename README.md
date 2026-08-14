@@ -212,6 +212,11 @@ comparable input scale; raw and normalized RMS are recorded in the report. The
 workflow uploads individual JSON records plus an aggregate Markdown
 table containing mean ± standard deviation.
 
+The proof profile uses the canonical `Salesforce/wikitext` repository,
+configuration `wikitext-2-raw-v1`, at a pinned dataset revision. This avoids
+the deprecated unnamespaced `wikitext` alias and records dataset provenance in
+every result.
+
 Do not enable `allow_nondeterministic` for final assignment evidence.
 
 The training comparison keeps the tokenizer, corpus, transformer shape,

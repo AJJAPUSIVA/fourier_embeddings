@@ -7,7 +7,9 @@ from experiments.aggregate_training import aggregate, validate_matrix
 
 def run(arm, seed, ppl):
     return {
-        "embedding": arm, "seed": seed, "dataset": "synthetic", "tokenizer": "gpt2",
+        "embedding": arm, "seed": seed, "dataset": "synthetic",
+        "dataset_source": "generated:synthetic-v1", "dataset_revision": None,
+        "tokenizer": "gpt2",
         "deterministic": True, "model_config": {"d_model": 8},
         "training": {"max_tokens": 100, "batch_size": 2, "grad_accumulation": 2,
                      "max_steps": 3, "learning_rate": 0.001, "weight_decay": 0.0},
