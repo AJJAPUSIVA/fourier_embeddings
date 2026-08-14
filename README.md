@@ -5,7 +5,7 @@ Fourier wave and the waves added to form a word?
 
 ## Result-based verdict
 
-The committed benchmark verdict is **PASS**, under two predeclared criteria.
+The committed benchmark verdict is **PASS**, under two explicit committed criteria.
 This is empirical evidence for the tested configuration, not a universal proof.
 
 | Decision criterion | Required | Measured | Verdict |
@@ -148,6 +148,7 @@ equivalent to the unchunked formulation; regression tests compare both paths.
 │   └── plot_benchmarks.py # reproducible dependency-free SVG plots
 ├── results/
 │   ├── training_results.json
+│   ├── collision_results.json
 │   ├── benchmark_results.md
 │   └── plots/
 └── index.html                 # interactive explanation

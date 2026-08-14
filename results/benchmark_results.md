@@ -57,7 +57,8 @@ all-pairs cosine analysis covered a deterministic 10,000-token subset.
 - Runtime results from shared hosted runners are noisy and are not a speed
   guarantee.
 
-Machine-readable values are in [`training_results.json`](training_results.json).
+Machine-readable values are in [`training_results.json`](training_results.json)
+and [`collision_results.json`](collision_results.json).
 Regenerate the plots with:
 
 ```bash

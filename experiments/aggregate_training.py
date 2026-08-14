@@ -178,7 +178,7 @@ def markdown_report(report: dict) -> str:
             f"| {item['description']} | {item['measured']:.2f}{suffix} "
             f"| {item['operator']} {item['threshold']:.2f}{suffix} | **{item['status']}** |"
         )
-    lines.extend(["", "The verdict applies only to these predeclared empirical criteria; it is not a proof of injectivity.", ""])
+    lines.extend(["", "The verdict applies only to these explicit committed empirical criteria; it is not a proof of injectivity.", ""])
     return "\n".join(lines)
 
 

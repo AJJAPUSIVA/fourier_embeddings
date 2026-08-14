@@ -1,0 +1,936 @@
+{
+  "tokenizer": "gpt2",
+  "analyzed_tokens": 50257,
+  "max_tokens": 50257,
+  "thresholds": [
+    0.99,
+    0.999,
+    0.9999
+  ],
+  "dimensions": [
+    {
+      "D": 128,
+      "elapsed_seconds": 1.253028779999994,
+      "exact": {
+        "rounding_decimals": null,
+        "collision_groups": 0,
+        "tokens_in_collision_groups": 0,
+        "examples": []
+      },
+      "quantized": {
+        "3": {
+          "rounding_decimals": 3,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        },
+        "4": {
+          "rounding_decimals": 4,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        },
+        "5": {
+          "rounding_decimals": 5,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        }
+      },
+      "near_analyzed_tokens": 10000,
+      "near": {
+        "nearest_distinct_cosine_quantiles": {
+          "0.5": 0.8553365468978882,
+          "0.9": 0.9260044097900391,
+          "0.99": 0.964833676815033,
+          "0.999": 0.9718425273895264,
+          "1.0": 0.9762745499610901
+        },
+        "near_collision_counts": {
+          "0.99": 0,
+          "0.999": 0,
+          "0.9999": 0
+        },
+        "minimum_self_retrieval_margin": 0.023725450038909912,
+        "worst_distinct_pairs": [
+          {
+            "cosine": 0.9762745499610901,
+            "left": {
+              "token_id": 2828,
+              "text": " officials",
+              "bytes_hex": "206f6666696369616c73"
+            },
+            "right": {
+              "token_id": 1743,
+              "text": " official",
+              "bytes_hex": "206f6666696369616c"
+            }
+          },
+          {
+            "cosine": 0.9726712107658386,
+            "left": {
+              "token_id": 8783,
+              "text": " champion",
+              "bytes_hex": "206368616d70696f6e"
+            },
+            "right": {
+              "token_id": 7827,
+              "text": " champions",
+              "bytes_hex": "206368616d70696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9725103974342346,
+            "left": {
+              "token_id": 6116,
+              "text": " positions",
+              "bytes_hex": "20706f736974696f6e73"
+            },
+            "right": {
+              "token_id": 2292,
+              "text": " position",
+              "bytes_hex": "20706f736974696f6e"
+            }
+          },
+          {
+            "cosine": 0.9723188877105713,
+            "left": {
+              "token_id": 3210,
+              "text": " standard",
+              "bytes_hex": "207374616e64617264"
+            },
+            "right": {
+              "token_id": 5423,
+              "text": " standards",
+              "bytes_hex": "207374616e6461726473"
+            }
+          },
+          {
+            "cosine": 0.9721249341964722,
+            "left": {
+              "token_id": 2634,
+              "text": "é",
+              "bytes_hex": "c3a9"
+            },
+            "right": {
+              "token_id": 3556,
+              "text": "</",
+              "bytes_hex": "3c2f"
+            }
+          },
+          {
+            "cosine": 0.9718422293663025,
+            "left": {
+              "token_id": 2551,
+              "text": " decision",
+              "bytes_hex": "206465636973696f6e"
+            },
+            "right": {
+              "token_id": 5370,
+              "text": " decisions",
+              "bytes_hex": "206465636973696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9717701077461243,
+            "left": {
+              "token_id": 7885,
+              "text": " variable",
+              "bytes_hex": "207661726961626c65"
+            },
+            "right": {
+              "token_id": 9633,
+              "text": " variables",
+              "bytes_hex": "207661726961626c6573"
+            }
+          },
+          {
+            "cosine": 0.9716566801071167,
+            "left": {
+              "token_id": 8695,
+              "text": " relation",
+              "bytes_hex": "2072656c6174696f6e"
+            },
+            "right": {
+              "token_id": 2316,
+              "text": " relations",
+              "bytes_hex": "2072656c6174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9716131687164307,
+            "left": {
+              "token_id": 9217,
+              "text": " indicates",
+              "bytes_hex": "20696e64696361746573"
+            },
+            "right": {
+              "token_id": 7603,
+              "text": " indicate",
+              "bytes_hex": "20696e646963617465"
+            }
+          },
+          {
+            "cosine": 0.9711470007896423,
+            "left": {
+              "token_id": 7008,
+              "text": " consumers",
+              "bytes_hex": "20636f6e73756d657273"
+            },
+            "right": {
+              "token_id": 7172,
+              "text": " consumer",
+              "bytes_hex": "20636f6e73756d6572"
+            }
+          },
+          {
+            "cosine": 0.9710696339607239,
+            "left": {
+              "token_id": 1605,
+              "text": " American",
+              "bytes_hex": "20416d65726963616e"
+            },
+            "right": {
+              "token_id": 3399,
+              "text": " Americans",
+              "bytes_hex": "20416d65726963616e73"
+            }
+          },
+          {
+            "cosine": 0.9710664749145508,
+            "left": {
+              "token_id": 6901,
+              "text": " describe",
+              "bytes_hex": "206465736372696265"
+            },
+            "right": {
+              "token_id": 8477,
+              "text": " describes",
+              "bytes_hex": "20646573637269626573"
+            }
+          },
+          {
+            "cosine": 0.9710392355918884,
+            "left": {
+              "token_id": 7746,
+              "text": " estimates",
+              "bytes_hex": "20657374696d61746573"
+            },
+            "right": {
+              "token_id": 8636,
+              "text": " estimate",
+              "bytes_hex": "20657374696d617465"
+            }
+          },
+          {
+            "cosine": 0.9705854654312134,
+            "left": {
+              "token_id": 6946,
+              "text": " communication",
+              "bytes_hex": "20636f6d6d756e69636174696f6e"
+            },
+            "right": {
+              "token_id": 8062,
+              "text": " communications",
+              "bytes_hex": "20636f6d6d756e69636174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9705019593238831,
+            "left": {
+              "token_id": 2776,
+              "text": " relationship",
+              "bytes_hex": "2072656c6174696f6e73686970"
+            },
+            "right": {
+              "token_id": 6958,
+              "text": " relationships",
+              "bytes_hex": "2072656c6174696f6e7368697073"
+            }
+          },
+          {
+            "cosine": 0.9704596996307373,
+            "left": {
+              "token_id": 2615,
+              "text": " building",
+              "bytes_hex": "206275696c64696e67"
+            },
+            "right": {
+              "token_id": 6832,
+              "text": " buildings",
+              "bytes_hex": "206275696c64696e6773"
+            }
+          },
+          {
+            "cosine": 0.9701772928237915,
+            "left": {
+              "token_id": 2620,
+              "text": " increase",
+              "bytes_hex": "20696e637265617365"
+            },
+            "right": {
+              "token_id": 5732,
+              "text": " increases",
+              "bytes_hex": "20696e63726561736573"
+            }
+          },
+          {
+            "cosine": 0.9700711369514465,
+            "left": {
+              "token_id": 4610,
+              "text": " solution",
+              "bytes_hex": "20736f6c7574696f6e"
+            },
+            "right": {
+              "token_id": 8136,
+              "text": " solutions",
+              "bytes_hex": "20736f6c7574696f6e73"
+            }
+          },
+          {
+            "cosine": 0.969920814037323,
+            "left": {
+              "token_id": 7064,
+              "text": " locations",
+              "bytes_hex": "206c6f636174696f6e73"
+            },
+            "right": {
+              "token_id": 4067,
+              "text": " location",
+              "bytes_hex": "206c6f636174696f6e"
+            }
+          },
+          {
+            "cosine": 0.9697333574295044,
+            "left": {
+              "token_id": 4578,
+              "text": " argument",
+              "bytes_hex": "20617267756d656e74"
+            },
+            "right": {
+              "token_id": 7159,
+              "text": " arguments",
+              "bytes_hex": "20617267756d656e7473"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "D": 256,
+      "elapsed_seconds": 1.7950772230000211,
+      "exact": {
+        "rounding_decimals": null,
+        "collision_groups": 0,
+        "tokens_in_collision_groups": 0,
+        "examples": []
+      },
+      "quantized": {
+        "3": {
+          "rounding_decimals": 3,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        },
+        "4": {
+          "rounding_decimals": 4,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        },
+        "5": {
+          "rounding_decimals": 5,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        }
+      },
+      "near_analyzed_tokens": 10000,
+      "near": {
+        "nearest_distinct_cosine_quantiles": {
+          "0.5": 0.8478277921676636,
+          "0.9": 0.9211924076080322,
+          "0.99": 0.9538586139678955,
+          "0.999": 0.9660240411758423,
+          "1.0": 0.9691049456596375
+        },
+        "near_collision_counts": {
+          "0.99": 0,
+          "0.999": 0,
+          "0.9999": 0
+        },
+        "minimum_self_retrieval_margin": 0.03089505434036255,
+        "worst_distinct_pairs": [
+          {
+            "cosine": 0.9691049456596375,
+            "left": {
+              "token_id": 1705,
+              "text": " news",
+              "bytes_hex": "206e657773"
+            },
+            "right": {
+              "token_id": 6043,
+              "text": " newsp",
+              "bytes_hex": "206e65777370"
+            }
+          },
+          {
+            "cosine": 0.9690890312194824,
+            "left": {
+              "token_id": 1448,
+              "text": " group",
+              "bytes_hex": "2067726f7570"
+            },
+            "right": {
+              "token_id": 1132,
+              "text": " grou",
+              "bytes_hex": "2067726f75"
+            }
+          },
+          {
+            "cosine": 0.9681367874145508,
+            "left": {
+              "token_id": 6958,
+              "text": " relationships",
+              "bytes_hex": "2072656c6174696f6e7368697073"
+            },
+            "right": {
+              "token_id": 2776,
+              "text": " relationship",
+              "bytes_hex": "2072656c6174696f6e73686970"
+            }
+          },
+          {
+            "cosine": 0.9673871397972107,
+            "left": {
+              "token_id": 6946,
+              "text": " communication",
+              "bytes_hex": "20636f6d6d756e69636174696f6e"
+            },
+            "right": {
+              "token_id": 8062,
+              "text": " communications",
+              "bytes_hex": "20636f6d6d756e69636174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9666598439216614,
+            "left": {
+              "token_id": 4009,
+              "text": " organization",
+              "bytes_hex": "206f7267616e697a6174696f6e"
+            },
+            "right": {
+              "token_id": 5745,
+              "text": " organizations",
+              "bytes_hex": "206f7267616e697a6174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9660234451293945,
+            "left": {
+              "token_id": 9079,
+              "text": " requirement",
+              "bytes_hex": "20726571756972656d656e74"
+            },
+            "right": {
+              "token_id": 5359,
+              "text": " requirements",
+              "bytes_hex": "20726571756972656d656e7473"
+            }
+          },
+          {
+            "cosine": 0.9646523594856262,
+            "left": {
+              "token_id": 3265,
+              "text": " population",
+              "bytes_hex": "20706f70756c6174696f6e"
+            },
+            "right": {
+              "token_id": 9684,
+              "text": " populations",
+              "bytes_hex": "20706f70756c6174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9641751050949097,
+            "left": {
+              "token_id": 5479,
+              "text": " applications",
+              "bytes_hex": "206170706c69636174696f6e73"
+            },
+            "right": {
+              "token_id": 3586,
+              "text": " application",
+              "bytes_hex": "206170706c69636174696f6e"
+            }
+          },
+          {
+            "cosine": 0.9641415476799011,
+            "left": {
+              "token_id": 8561,
+              "text": " improvements",
+              "bytes_hex": "20696d70726f76656d656e7473"
+            },
+            "right": {
+              "token_id": 9025,
+              "text": " improvement",
+              "bytes_hex": "20696d70726f76656d656e74"
+            }
+          },
+          {
+            "cosine": 0.964078962802887,
+            "left": {
+              "token_id": 6712,
+              "text": " institutions",
+              "bytes_hex": "20696e737469747574696f6e73"
+            },
+            "right": {
+              "token_id": 9901,
+              "text": " institution",
+              "bytes_hex": "20696e737469747574696f6e"
+            }
+          },
+          {
+            "cosine": 0.9640036821365356,
+            "left": {
+              "token_id": 9001,
+              "text": " regulation",
+              "bytes_hex": "20726567756c6174696f6e"
+            },
+            "right": {
+              "token_id": 6647,
+              "text": " regulations",
+              "bytes_hex": "20726567756c6174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9635210633277893,
+            "left": {
+              "token_id": 1230,
+              "text": " government",
+              "bytes_hex": "20676f7665726e6d656e74"
+            },
+            "right": {
+              "token_id": 6905,
+              "text": " governments",
+              "bytes_hex": "20676f7665726e6d656e7473"
+            }
+          },
+          {
+            "cosine": 0.9632179737091064,
+            "left": {
+              "token_id": 8945,
+              "text": " transactions",
+              "bytes_hex": "207472616e73616374696f6e73"
+            },
+            "right": {
+              "token_id": 8611,
+              "text": " transaction",
+              "bytes_hex": "207472616e73616374696f6e"
+            }
+          },
+          {
+            "cosine": 0.9623194932937622,
+            "left": {
+              "token_id": 3925,
+              "text": " individuals",
+              "bytes_hex": "20696e646976696475616c73"
+            },
+            "right": {
+              "token_id": 1981,
+              "text": " individual",
+              "bytes_hex": "20696e646976696475616c"
+            }
+          },
+          {
+            "cosine": 0.9621450304985046,
+            "left": {
+              "token_id": 5924,
+              "text": " experienced",
+              "bytes_hex": "20657870657269656e636564"
+            },
+            "right": {
+              "token_id": 1998,
+              "text": " experience",
+              "bytes_hex": "20657870657269656e6365"
+            }
+          },
+          {
+            "cosine": 0.9620380401611328,
+            "left": {
+              "token_id": 6461,
+              "text": " experiences",
+              "bytes_hex": "20657870657269656e636573"
+            },
+            "right": {
+              "token_id": 1998,
+              "text": " experience",
+              "bytes_hex": "20657870657269656e6365"
+            }
+          },
+          {
+            "cosine": 0.9616411924362183,
+            "left": {
+              "token_id": 4734,
+              "text": " Republicans",
+              "bytes_hex": "2052657075626c6963616e73"
+            },
+            "right": {
+              "token_id": 3415,
+              "text": " Republican",
+              "bytes_hex": "2052657075626c6963616e"
+            }
+          },
+          {
+            "cosine": 0.9615994691848755,
+            "left": {
+              "token_id": 3580,
+              "text": " difference",
+              "bytes_hex": "20646966666572656e6365"
+            },
+            "right": {
+              "token_id": 5400,
+              "text": " differences",
+              "bytes_hex": "20646966666572656e636573"
+            }
+          },
+          {
+            "cosine": 0.9612277150154114,
+            "left": {
+              "token_id": 8787,
+              "text": " connections",
+              "bytes_hex": "20636f6e6e656374696f6e73"
+            },
+            "right": {
+              "token_id": 4637,
+              "text": " connection",
+              "bytes_hex": "20636f6e6e656374696f6e"
+            }
+          },
+          {
+            "cosine": 0.9596750736236572,
+            "left": {
+              "token_id": 9984,
+              "text": " discussions",
+              "bytes_hex": "2064697363757373696f6e73"
+            },
+            "right": {
+              "token_id": 5114,
+              "text": " discussion",
+              "bytes_hex": "2064697363757373696f6e"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "D": 512,
+      "elapsed_seconds": 3.0324536119999834,
+      "exact": {
+        "rounding_decimals": null,
+        "collision_groups": 0,
+        "tokens_in_collision_groups": 0,
+        "examples": []
+      },
+      "quantized": {
+        "3": {
+          "rounding_decimals": 3,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        },
+        "4": {
+          "rounding_decimals": 4,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        },
+        "5": {
+          "rounding_decimals": 5,
+          "collision_groups": 0,
+          "tokens_in_collision_groups": 0,
+          "examples": []
+        }
+      },
+      "near_analyzed_tokens": 10000,
+      "near": {
+        "nearest_distinct_cosine_quantiles": {
+          "0.5": 0.8460045456886292,
+          "0.9": 0.9212571382522583,
+          "0.99": 0.9543699026107788,
+          "0.999": 0.9625905752182007,
+          "1.0": 0.9665593504905701
+        },
+        "near_collision_counts": {
+          "0.99": 0,
+          "0.999": 0,
+          "0.9999": 0
+        },
+        "minimum_self_retrieval_margin": 0.03344064950942993,
+        "worst_distinct_pairs": [
+          {
+            "cosine": 0.9665593504905701,
+            "left": {
+              "token_id": 2776,
+              "text": " relationship",
+              "bytes_hex": "2072656c6174696f6e73686970"
+            },
+            "right": {
+              "token_id": 6958,
+              "text": " relationships",
+              "bytes_hex": "2072656c6174696f6e7368697073"
+            }
+          },
+          {
+            "cosine": 0.966139554977417,
+            "left": {
+              "token_id": 8062,
+              "text": " communications",
+              "bytes_hex": "20636f6d6d756e69636174696f6e73"
+            },
+            "right": {
+              "token_id": 6946,
+              "text": " communication",
+              "bytes_hex": "20636f6d6d756e69636174696f6e"
+            }
+          },
+          {
+            "cosine": 0.9657568335533142,
+            "left": {
+              "token_id": 4009,
+              "text": " organization",
+              "bytes_hex": "206f7267616e697a6174696f6e"
+            },
+            "right": {
+              "token_id": 5745,
+              "text": " organizations",
+              "bytes_hex": "206f7267616e697a6174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.962692141532898,
+            "left": {
+              "token_id": 9025,
+              "text": " improvement",
+              "bytes_hex": "20696d70726f76656d656e74"
+            },
+            "right": {
+              "token_id": 8561,
+              "text": " improvements",
+              "bytes_hex": "20696d70726f76656d656e7473"
+            }
+          },
+          {
+            "cosine": 0.962622344493866,
+            "left": {
+              "token_id": 9079,
+              "text": " requirement",
+              "bytes_hex": "20726571756972656d656e74"
+            },
+            "right": {
+              "token_id": 5359,
+              "text": " requirements",
+              "bytes_hex": "20726571756972656d656e7473"
+            }
+          },
+          {
+            "cosine": 0.9625905156135559,
+            "left": {
+              "token_id": 8945,
+              "text": " transactions",
+              "bytes_hex": "207472616e73616374696f6e73"
+            },
+            "right": {
+              "token_id": 8611,
+              "text": " transaction",
+              "bytes_hex": "207472616e73616374696f6e"
+            }
+          },
+          {
+            "cosine": 0.9617779850959778,
+            "left": {
+              "token_id": 5479,
+              "text": " applications",
+              "bytes_hex": "206170706c69636174696f6e73"
+            },
+            "right": {
+              "token_id": 3586,
+              "text": " application",
+              "bytes_hex": "206170706c69636174696f6e"
+            }
+          },
+          {
+            "cosine": 0.9617230892181396,
+            "left": {
+              "token_id": 6712,
+              "text": " institutions",
+              "bytes_hex": "20696e737469747574696f6e73"
+            },
+            "right": {
+              "token_id": 9901,
+              "text": " institution",
+              "bytes_hex": "20696e737469747574696f6e"
+            }
+          },
+          {
+            "cosine": 0.9617111086845398,
+            "left": {
+              "token_id": 9001,
+              "text": " regulation",
+              "bytes_hex": "20726567756c6174696f6e"
+            },
+            "right": {
+              "token_id": 6647,
+              "text": " regulations",
+              "bytes_hex": "20726567756c6174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9613502025604248,
+            "left": {
+              "token_id": 3925,
+              "text": " individuals",
+              "bytes_hex": "20696e646976696475616c73"
+            },
+            "right": {
+              "token_id": 1981,
+              "text": " individual",
+              "bytes_hex": "20696e646976696475616c"
+            }
+          },
+          {
+            "cosine": 0.960777997970581,
+            "left": {
+              "token_id": 3265,
+              "text": " population",
+              "bytes_hex": "20706f70756c6174696f6e"
+            },
+            "right": {
+              "token_id": 9684,
+              "text": " populations",
+              "bytes_hex": "20706f70756c6174696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9603074789047241,
+            "left": {
+              "token_id": 4734,
+              "text": " Republicans",
+              "bytes_hex": "2052657075626c6963616e73"
+            },
+            "right": {
+              "token_id": 3415,
+              "text": " Republican",
+              "bytes_hex": "2052657075626c6963616e"
+            }
+          },
+          {
+            "cosine": 0.9600049257278442,
+            "left": {
+              "token_id": 3580,
+              "text": " difference",
+              "bytes_hex": "20646966666572656e6365"
+            },
+            "right": {
+              "token_id": 5400,
+              "text": " differences",
+              "bytes_hex": "20646966666572656e636573"
+            }
+          },
+          {
+            "cosine": 0.9599965810775757,
+            "left": {
+              "token_id": 2828,
+              "text": " officials",
+              "bytes_hex": "206f6666696369616c73"
+            },
+            "right": {
+              "token_id": 1743,
+              "text": " official",
+              "bytes_hex": "206f6666696369616c"
+            }
+          },
+          {
+            "cosine": 0.959437370300293,
+            "left": {
+              "token_id": 6905,
+              "text": " governments",
+              "bytes_hex": "20676f7665726e6d656e7473"
+            },
+            "right": {
+              "token_id": 1230,
+              "text": " government",
+              "bytes_hex": "20676f7665726e6d656e74"
+            }
+          },
+          {
+            "cosine": 0.9594346880912781,
+            "left": {
+              "token_id": 4637,
+              "text": " connection",
+              "bytes_hex": "20636f6e6e656374696f6e"
+            },
+            "right": {
+              "token_id": 8787,
+              "text": " connections",
+              "bytes_hex": "20636f6e6e656374696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9591919183731079,
+            "left": {
+              "token_id": 1998,
+              "text": " experience",
+              "bytes_hex": "20657870657269656e6365"
+            },
+            "right": {
+              "token_id": 6461,
+              "text": " experiences",
+              "bytes_hex": "20657870657269656e636573"
+            }
+          },
+          {
+            "cosine": 0.9591076374053955,
+            "left": {
+              "token_id": 5114,
+              "text": " discussion",
+              "bytes_hex": "2064697363757373696f6e"
+            },
+            "right": {
+              "token_id": 9984,
+              "text": " discussions",
+              "bytes_hex": "2064697363757373696f6e73"
+            }
+          },
+          {
+            "cosine": 0.9588081240653992,
+            "left": {
+              "token_id": 5924,
+              "text": " experienced",
+              "bytes_hex": "20657870657269656e636564"
+            },
+            "right": {
+              "token_id": 1998,
+              "text": " experience",
+              "bytes_hex": "20657870657269656e6365"
+            }
+          },
+          {
+            "cosine": 0.9583892822265625,
+            "left": {
+              "token_id": 4540,
+              "text": " candidate",
+              "bytes_hex": "2063616e646964617465"
+            },
+            "right": {
+              "token_id": 5871,
+              "text": " candidates",
+              "bytes_hex": "2063616e64696461746573"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

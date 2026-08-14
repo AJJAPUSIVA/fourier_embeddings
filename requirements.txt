@@ -4,5 +4,5 @@ numpy>=1.23
 pytest>=7.0
 kronecker-embeddings>=0.1.1
 
-# Optional, used by train_proof.py for WikiText-2. The script has a fallback.
+# Optional experiment dependency, required when train_proof.py uses WikiText-2.
 datasets>=2.0
