@@ -48,6 +48,13 @@ def validate_matrix(runs: list[dict], arms: list[str], seeds: list[int]) -> None
         mismatches = [field for field in MATCHED_FIELDS if nested(run, field) != nested(baseline, field)]
         if mismatches:
             raise ValueError(f"Unmatched settings in {run['source_file']}: {mismatches}")
+    for run in runs:
+        normalized_rms = run["initial_embedding_scale"]["normalized_rms"]
+        if not 0.99 <= normalized_rms <= 1.01:
+            raise ValueError(
+                f"Embedding scale check failed in {run['source_file']}: "
+                f"normalized_rms={normalized_rms}"
+            )
 
 
 def mean_std(values: list[float]) -> dict[str, float]:
@@ -72,6 +79,8 @@ def aggregate(runs: list[dict], arms: list[str]) -> dict:
             "tokens_per_second": mean_std([run["tokens_per_second"] for run in arm_runs]),
             "embedding_parameters": arm_runs[0]["parameters"]["embedding"],
             "total_parameters": arm_runs[0]["parameters"]["total"],
+            "raw_embedding_rms": mean_std([run["initial_embedding_scale"]["raw_rms"] for run in arm_runs]),
+            "normalized_embedding_rms": mean_std([run["initial_embedding_scale"]["normalized_rms"] for run in arm_runs]),
         }
     if "dense" in summary:
         dense_ppl = summary["dense"]["validation_perplexity"]["mean"]
@@ -86,17 +95,20 @@ def markdown_report(report: dict) -> str:
     lines = [
         "# Deterministic matched-training results", "",
         "Values are mean ± sample standard deviation across seeds.", "",
-        "| Embedding | Seeds | Validation PPL | PPL vs dense | Embedding params | Reduction vs dense | Tokens/s |",
-        "|---|---:|---:|---:|---:|---:|---:|",
+        "| Embedding | Seeds | Validation PPL | PPL vs dense | Raw RMS | Normalized RMS | Embedding params | Reduction vs dense | Tokens/s |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for arm, values in report["arms"].items():
         ppl = values["validation_perplexity"]
         speed = values["tokens_per_second"]
+        raw_rms = values["raw_embedding_rms"]["mean"]
+        normalized_rms = values["normalized_embedding_rms"]["mean"]
         change = values.get("perplexity_change_vs_dense_pct", 0.0)
         reduction = values.get("embedding_parameter_reduction_vs_dense", 1.0)
         lines.append(
             f"| {arm} | {len(values['seeds'])} | {ppl['mean']:.2f} ± {ppl['std']:.2f} "
-            f"| {change:+.2f}% | {values['embedding_parameters']:,} | {reduction:.1f}× "
+            f"| {change:+.2f}% | {raw_rms:.4f} | {normalized_rms:.4f} "
+            f"| {values['embedding_parameters']:,} | {reduction:.1f}× "
             f"| {speed['mean']:.1f} ± {speed['std']:.1f} |"
         )
     lines.extend(["", "The table reports experimental evidence, not a mathematical proof of injectivity.", ""])

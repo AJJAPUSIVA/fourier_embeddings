@@ -14,6 +14,7 @@ def run(arm, seed, ppl):
         "final_validation_loss": 1.0, "final_validation_perplexity": ppl,
         "elapsed_s": 2.0, "tokens_per_second": 10.0,
         "parameters": {"embedding": 100 if arm == "dense" else 10, "total": 200},
+        "initial_embedding_scale": {"raw_rms": 0.5, "normalized_rms": 1.0},
         "source_file": f"{arm}-{seed}.json",
     }
 
@@ -32,4 +33,11 @@ def test_validation_rejects_unmatched_hyperparameters():
     runs[1] = copy.deepcopy(runs[1])
     runs[1]["training"]["max_steps"] = 4
     with pytest.raises(ValueError, match="Unmatched settings"):
+        validate_matrix(runs, ["dense", "fourier"], [1])
+
+
+def test_validation_rejects_bad_normalized_scale():
+    runs = [run("dense", 1, 10.0), run("fourier", 1, 11.0)]
+    runs[1]["initial_embedding_scale"]["normalized_rms"] = 0.5
+    with pytest.raises(ValueError, match="Embedding scale check failed"):
         validate_matrix(runs, ["dense", "fourier"], [1])

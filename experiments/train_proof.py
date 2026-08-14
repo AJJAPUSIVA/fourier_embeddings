@@ -64,6 +64,10 @@ class MiniLM(nn.Module):
             self.tok_emb = FourierEmbedding(vocab_size=cfg.vocab_size, d_model=cfg.d_model, tokenizer=tokenizer, D=fourier_dim, max_byte_len=max_byte_len, mode="dynamic")
         else:
             raise ValueError(f"Unknown embedding type: {embedding_type}")
+        # Give every transformer arm comparable token-vector scale. Xavier
+        # initialization depends on matrix shape, so normalizing only through
+        # initialization would unfairly shrink the large dense table.
+        self.tok_norm = nn.LayerNorm(cfg.d_model, eps=1e-8, elementwise_affine=False)
         self.blocks = nn.ModuleList([TransformerBlock(cfg) for _ in range(cfg.n_layers)])
         self.ln_f = nn.LayerNorm(cfg.d_model)
         self.lm_head = nn.Linear(cfg.d_model, cfg.vocab_size, bias=False)
@@ -72,7 +76,7 @@ class MiniLM(nn.Module):
         _, length = input_ids.shape
         positions = torch.arange(length, device=input_ids.device).unsqueeze(0)
         mask = torch.triu(torch.ones((length, length), device=input_ids.device, dtype=torch.bool), diagonal=1)
-        x = self.tok_emb(input_ids) + self.pos_emb(positions)
+        x = self.tok_norm(self.tok_emb(input_ids)) + self.pos_emb(positions)
         for block in self.blocks:
             x = block(x, mask)
         return self.lm_head(self.ln_f(x))
@@ -104,7 +108,7 @@ def load_token_ids(tokenizer, dataset: str, max_tokens: int) -> list[int]:
         text = "\n".join(value for value in records["text"] if value.strip())
     else:
         raise ValueError(f"Unsupported dataset: {dataset}")
-    token_ids = tokenizer.encode(text)[:max_tokens]
+    token_ids = tokenizer.encode(text, truncation=True, max_length=max_tokens)
     if len(token_ids) < 2:
         raise RuntimeError(f"Dataset produced only {len(token_ids)} tokens")
     return token_ids
@@ -118,6 +122,21 @@ def make_splits(token_ids: list[int], sequence_length: int) -> tuple[Tensor, Ten
     data = torch.tensor(token_ids[: row_count * row_length]).reshape(row_count, row_length)
     train_count = max(1, int(0.9 * row_count))
     return data[:train_count], data[train_count:]
+
+
+@torch.no_grad()
+def embedding_scale_stats(model: MiniLM, vocab_size: int, device: torch.device, sample_size: int = 2048) -> dict[str, float]:
+    """Measure raw and normalized scale on a deterministic vocabulary prefix."""
+    token_ids = torch.arange(min(vocab_size, sample_size), device=device)
+    raw = model.tok_emb(token_ids)
+    normalized = model.tok_norm(raw)
+    return {
+        "sample_tokens": token_ids.numel(),
+        "raw_rms": raw.square().mean().sqrt().item(),
+        "raw_mean_l2_norm": raw.norm(dim=-1).mean().item(),
+        "normalized_rms": normalized.square().mean().sqrt().item(),
+        "normalized_mean_l2_norm": normalized.norm(dim=-1).mean().item(),
+    }
 
 
 def train_steps(model, data, optimizer, device, *, seed: int, batch_size: int, grad_accumulation: int, max_steps: int, log_every: int):
@@ -211,6 +230,7 @@ def main(argv: Optional[list[str]] = None) -> dict:
     model = MiniLM(cfg, args.embedding, tokenizer, args.fourier_dim, args.max_byte_len)
     initialize_matched_model(model, args.seed, args.embedding)
     model.to(device)
+    initial_embedding_scale = embedding_scale_stats(model, cfg.vocab_size, device)
     torch.manual_seed(derived_seed(args.seed, "training"))
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(derived_seed(args.seed, "training"))
@@ -226,6 +246,7 @@ def main(argv: Optional[list[str]] = None) -> dict:
         "fourier_dim": args.fourier_dim if args.embedding == "fourier" else None,
         "training": {"max_tokens": len(token_ids), "train_sequences": train_data.size(0), "validation_sequences": validation_data.size(0), "batch_size": args.batch_size, "grad_accumulation": args.grad_accumulation, "effective_batch_size": effective_batch, "max_steps": args.max_steps, "learning_rate": args.learning_rate, "weight_decay": args.weight_decay},
         "parameters": model.count_params(), "history": history,
+        "initial_embedding_scale": initial_embedding_scale,
         "final_validation_loss": validation_loss, "final_validation_perplexity": validation_perplexity,
         "elapsed_s": elapsed, "tokens_per_second": (effective_batch * args.sequence_length * args.max_steps) / elapsed,
     }

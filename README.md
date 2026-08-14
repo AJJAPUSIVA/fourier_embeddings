@@ -207,7 +207,9 @@ workflow**. Run the `smoke` profile first. It executes Dense, Kronecker, and
 Fourier with seed 1337. After it passes, run `proof`, which uses seeds 1337,
 2027, and 3407 on WikiText-2. Each arm receives identical shared-model
 initialization, data order, effective batch size, optimizer settings, and step
-count. The workflow uploads individual JSON records plus an aggregate Markdown
+count. A shared parameter-free token normalization gives every transformer arm
+comparable input scale; raw and normalized RMS are recorded in the report. The
+workflow uploads individual JSON records plus an aggregate Markdown
 table containing mean ± standard deviation.
 
 Do not enable `allow_nondeterministic` for final assignment evidence.
