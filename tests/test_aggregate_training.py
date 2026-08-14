@@ -30,6 +30,21 @@ def test_aggregate_matched_matrix():
     assert report["arms"]["fourier"]["embedding_parameter_reduction_vs_dense"] == 10.0
 
 
+def test_result_based_criteria_report_pass_and_fail():
+    passing = [run("dense", 1, 20.0), run("kronecker", 1, 10.0), run("fourier", 1, 10.2)]
+    passing[1]["parameters"]["embedding"] = 160
+    passing[2]["parameters"]["embedding"] = 10
+    report = aggregate(passing, ["dense", "kronecker", "fourier"])
+    assert report["overall_status"] == "PASS"
+    assert [item["status"] for item in report["criteria"]] == ["PASS", "PASS"]
+
+    failing = copy.deepcopy(passing)
+    failing[2]["final_validation_perplexity"] = 11.0
+    report = aggregate(failing, ["dense", "kronecker", "fourier"])
+    assert report["overall_status"] == "FAIL"
+    assert report["criteria"][0]["status"] == "FAIL"
+
+
 def test_validation_rejects_unmatched_hyperparameters():
     runs = [run("dense", 1, 10.0), run("fourier", 1, 11.0)]
     runs[1] = copy.deepcopy(runs[1])

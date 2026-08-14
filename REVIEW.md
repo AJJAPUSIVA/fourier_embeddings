@@ -29,11 +29,15 @@ waves, distinct strings such as `bb` and `ca` had exactly equal codes.
 - Four dependency-free reference tests passed, including the `bb`/`ca`
   regression and three byte-order adversarial pairs.
 
-## Validation still required
+## Validation completed remotely
 
-PyTorch, Transformers, pytest, and datasets were not installed in the review
-environment, so the PyTorch unit suite and transformer training experiment were
-not executed here. Install `requirements.txt`, run both commands from the
-README, and retain the resulting logs/JSON before claiming model-quality
-parity. A credible final report should use at least three random seeds and a
-dimension sweep.
+- The GitHub Actions unit suite passed with the project dependencies installed.
+- Collision analysis covered 50,257 GPT-2 token IDs at D=128/256/512.
+- Matched WikiText-2 training completed for three embeddings and three seeds.
+- Result-based criteria and limitations are committed in
+  `results/benchmark_results.md`; raw aggregates are in
+  `results/training_results.json`.
+
+The local review environment still did not execute PyTorch training. The
+committed results came from GitHub Actions and should be interpreted only under
+their recorded configuration and thresholds.

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="540" viewBox="0 0 900 540" role="img" aria-labelledby="title desc">
+<title id="title">Trainable embedding parameters</title><desc id="desc">Logarithmic bar height; exact parameter counts are printed above each bar.</desc>
+<rect width="900" height="540" fill="#ffffff" rx="16"/>
+<text x="60" y="52" font-family="system-ui,sans-serif" font-size="26" font-weight="700" fill="#0f172a">Trainable embedding parameters</text>
+<text x="60" y="80" font-family="system-ui,sans-serif" font-size="14" fill="#475569">Logarithmic bar height; exact parameter counts are printed above each bar.</text>
+<line x1="70" y1="455" x2="850" y2="455" stroke="#cbd5e1" stroke-width="2"/>
+<rect x="105" y="158.70" width="150" height="296.30" rx="8" fill="#64748b"/>
+<text x="180.0" y="146.70" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="650" fill="#0f172a">12,865,792</text>
+<text x="180.0" y="490" text-anchor="middle" font-family="system-ui,sans-serif" font-size="17" fill="#334155">Dense</text>
+<rect x="345" y="191.54" width="150" height="263.46" rx="8" fill="#f59e0b"/>
+<text x="420.0" y="179.54" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="650" fill="#0f172a">2,097,152</text>
+<text x="420.0" y="490" text-anchor="middle" font-family="system-ui,sans-serif" font-size="17" fill="#334155">Kronecker</text>
+<rect x="585" y="241.72" width="150" height="213.28" rx="8" fill="#2563eb"/>
+<text x="660.0" y="229.72" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" font-weight="650" fill="#0f172a">131,072</text>
+<text x="660.0" y="490" text-anchor="middle" font-family="system-ui,sans-serif" font-size="17" fill="#334155">Fourier</text>
+</svg>

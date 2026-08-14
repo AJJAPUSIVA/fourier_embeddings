@@ -3,10 +3,15 @@
 **ERA V5 Session 7 — Problem 4:** Can each character be represented as a
 Fourier wave and the waves added to form a word?
 
-## Result
+## Result-based verdict
 
-Yes, with an important qualification: the wave must encode **byte and
-position on independent frequency axes**. The first prototype used identical
+**PASS for the committed empirical criteria; not a universal proof.** Fourier-512
+kept mean validation perplexity within 2.73% of Kronecker while using 16× fewer
+embedding parameters. The full criterion table and limitations are in
+[`results/benchmark_results.md`](results/benchmark_results.md).
+
+The construction requires byte and position on **independent frequency
+axes**. The first prototype used identical
 byte and position frequencies. With the original normalization its phase
 depended only on `byte + position`, making `bb` and `ca` exactly identical.
 This revision fixes that alias and includes it as a regression test.
@@ -108,8 +113,9 @@ equivalent to the unchunked formulation; regression tests compare both paths.
   `max_byte_len` storage/compute bound (default 256). Dynamic storage is
   Problem 3, not this submission.
 - Invertibility from the compressed Fourier vector.
-- Comparable perplexity until `training_results.json` is produced by an
-  actual matched run.
+- Performance outside the committed WikiText-2 configuration. The checked-in
+  run passes its stated quality threshold; it does not establish universal
+  language-model parity.
 
 ## Repository layout
 
@@ -128,7 +134,12 @@ equivalent to the unchunked formulation; regression tests compare both paths.
 ├── experiments/
 │   ├── train_proof.py    # matched tiny-transformer comparison
 │   ├── analysis.py       # codec analysis
-│   └── collision_probe.py # vocabulary-scale collision report
+│   ├── collision_probe.py # vocabulary-scale collision report
+│   └── plot_benchmarks.py # reproducible dependency-free SVG plots
+├── results/
+│   ├── training_results.json
+│   ├── benchmark_results.md
+│   └── plots/
 └── index.html                 # interactive explanation
 ```
 
@@ -255,5 +266,8 @@ The revised method is a real Fourier alternative: it represents the
 byte-position occupancy signal through sampled 2-D Fourier coefficients and
 adds those complex waves to form a token code. It offers a large parameter
 reduction, but that reduction trades a complete Kronecker basis for a sampled
-one. The submission succeeds only if collision geometry and matched training
-results show that the sampled basis retains enough information.
+one. Under the committed thresholds, the result is **PASS**: 2.73% mean PPL
+regression versus the 3.00% limit, 16× embedding reduction, and zero measured
+exact or quantized collisions in the GPT-2 vocabulary. These are bounded
+experimental results, not unconditional claims about injectivity, speed, or
+all language-model tasks.

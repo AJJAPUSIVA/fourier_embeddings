@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "run_count": 9,
+  "experiment": {
+    "dataset": "wikitext",
+    "dataset_source": "Salesforce/wikitext",
+    "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "tokenizer": "gpt2",
+    "deterministic": true,
+    "seeds": [1337, 2027, 3407],
+    "model_config": {
+      "vocab_size": 50257,
+      "d_model": 256,
+      "n_heads": 4,
+      "n_layers": 4,
+      "d_ff": 1024,
+      "max_seq_len": 128,
+      "dropout": 0.1
+    },
+    "training": {
+      "max_tokens": 500000,
+      "train_sequences": 3487,
+      "validation_sequences": 388,
+      "batch_size": 4,
+      "grad_accumulation": 8,
+      "effective_batch_size": 32,
+      "max_steps": 1000,
+      "learning_rate": 0.0003,
+      "weight_decay": 0.01
+    }
+  },
+  "overall_status": "PASS",
+  "criteria": [
+    {
+      "id": "fourier_quality_vs_kronecker",
+      "description": "Fourier mean validation PPL regression versus Kronecker",
+      "measured": 2.7281333554599607,
+      "operator": "<=",
+      "threshold": 3.0,
+      "unit": "percent",
+      "status": "PASS"
+    },
+    {
+      "id": "fourier_embedding_reduction_vs_kronecker",
+      "description": "Kronecker/Fourier embedding parameter ratio",
+      "measured": 16.0,
+      "operator": ">=",
+      "threshold": 16.0,
+      "unit": "times",
+      "status": "PASS"
+    }
+  ],
+  "arms": {
+    "dense": {
+      "seeds": [1337, 2027, 3407],
+      "validation_loss": {"mean": 7.044872490564982, "std": 0.006762376552999873},
+      "validation_perplexity": {"mean": 1146.9800391481313, "std": 7.741418494259295},
+      "elapsed_s": {"mean": 3522.588317609667, "std": 74.76845605037983},
+      "tokens_per_second": {"mean": 1163.1264812749548, "std": 24.39041359944403},
+      "embedding_parameters": 12865792,
+      "total_parameters": 28923904,
+      "raw_embedding_rms": {"mean": 0.006291573556760947, "std": 0.0000028128401915292916},
+      "normalized_embedding_rms": {"mean": 0.9998728434244791, "std": 0.00000009104759881806056},
+      "perplexity_change_vs_dense_pct": 0.0,
+      "embedding_parameter_reduction_vs_dense": 1.0
+    },
+    "kronecker": {
+      "seeds": [1337, 2027, 3407],
+      "validation_loss": {"mean": 6.334277971585592, "std": 0.013084396873396218},
+      "validation_perplexity": {"mean": 563.5944584244096, "std": 7.35659223984476},
+      "elapsed_s": {"mean": 3546.959411552333, "std": 655.8231359968871},
+      "tokens_per_second": {"mean": 1184.119474878742, "std": 238.52775542119366},
+      "embedding_parameters": 2097152,
+      "total_parameters": 18155264,
+      "raw_embedding_rms": {"mean": 1.402243932088216, "std": 0.009545668093231324},
+      "normalized_embedding_rms": {"mean": 1.0, "std": 0.0},
+      "perplexity_change_vs_dense_pct": -50.86274920329089,
+      "embedding_parameter_reduction_vs_dense": 6.1348876953125
+    },
+    "fourier": {
+      "seeds": [1337, 2027, 3407],
+      "validation_loss": {"mean": 6.3612398147583, "std": 0.0057370350908731715},
+      "validation_perplexity": {"mean": 578.9700668342098, "std": 3.3180487338442455},
+      "elapsed_s": {"mean": 3530.834567338, "std": 183.3637157828474},
+      "tokens_per_second": {"mean": 1162.0961050019882, "std": 58.64815790327206},
+      "embedding_parameters": 131072,
+      "total_parameters": 16189184,
+      "raw_embedding_rms": {"mean": 1.1476078033447266, "std": 0.010532479795488124},
+      "normalized_embedding_rms": {"mean": 1.0, "std": 0.0},
+      "perplexity_change_vs_dense_pct": -49.52221947434986,
+      "embedding_parameter_reduction_vs_dense": 98.158203125
+    }
+  }
+}

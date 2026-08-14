@@ -64,7 +64,13 @@ def mean_std(values: list[float]) -> dict[str, float]:
     }
 
 
-def aggregate(runs: list[dict], arms: list[str]) -> dict:
+def aggregate(
+    runs: list[dict],
+    arms: list[str],
+    *,
+    max_fourier_ppl_regression_pct: float = 3.0,
+    min_fourier_reduction_vs_kronecker: float = 16.0,
+) -> dict:
     grouped = defaultdict(list)
     for run in runs:
         grouped[run["embedding"]].append(run)
@@ -88,12 +94,62 @@ def aggregate(runs: list[dict], arms: list[str]) -> dict:
         for arm, values in summary.items():
             values["perplexity_change_vs_dense_pct"] = 100 * (values["validation_perplexity"]["mean"] / dense_ppl - 1)
             values["embedding_parameter_reduction_vs_dense"] = dense_params / max(values["embedding_parameters"], 1)
-    return {"schema_version": 1, "run_count": len(runs), "arms": summary}
+    criteria = []
+    if "fourier" in summary and "kronecker" in summary:
+        fourier = summary["fourier"]
+        kronecker = summary["kronecker"]
+        ppl_regression = 100 * (
+            fourier["validation_perplexity"]["mean"]
+            / kronecker["validation_perplexity"]["mean"]
+            - 1
+        )
+        parameter_reduction = (
+            kronecker["embedding_parameters"] / fourier["embedding_parameters"]
+        )
+        criteria.extend([
+            {
+                "id": "fourier_quality_vs_kronecker",
+                "description": "Fourier mean validation PPL regression versus Kronecker",
+                "measured": ppl_regression,
+                "operator": "<=",
+                "threshold": max_fourier_ppl_regression_pct,
+                "unit": "percent",
+                "status": "PASS" if ppl_regression <= max_fourier_ppl_regression_pct else "FAIL",
+            },
+            {
+                "id": "fourier_embedding_reduction_vs_kronecker",
+                "description": "Kronecker/Fourier embedding parameter ratio",
+                "measured": parameter_reduction,
+                "operator": ">=",
+                "threshold": min_fourier_reduction_vs_kronecker,
+                "unit": "times",
+                "status": "PASS" if parameter_reduction >= min_fourier_reduction_vs_kronecker else "FAIL",
+            },
+        ])
+    overall = "PASS" if criteria and all(item["status"] == "PASS" for item in criteria) else "FAIL"
+    baseline = runs[0]
+    return {
+        "schema_version": 2,
+        "run_count": len(runs),
+        "experiment": {
+            "dataset": baseline["dataset"],
+            "dataset_source": baseline["dataset_source"],
+            "dataset_revision": baseline["dataset_revision"],
+            "tokenizer": baseline["tokenizer"],
+            "deterministic": baseline["deterministic"],
+            "seeds": sorted({run["seed"] for run in runs}),
+            "model_config": baseline["model_config"],
+            "training": baseline["training"],
+        },
+        "overall_status": overall,
+        "criteria": criteria,
+        "arms": summary,
+    }
 
 
 def markdown_report(report: dict) -> str:
     lines = [
-        "# Deterministic matched-training results", "",
+        f"# Deterministic matched-training results — {report['overall_status']}", "",
         "Values are mean ± sample standard deviation across seeds.", "",
         "| Embedding | Seeds | Validation PPL | PPL vs dense | Raw RMS | Normalized RMS | Embedding params | Reduction vs dense | Tokens/s |",
         "|---|---:|---:|---:|---:|---:|---:|---:|---:|",
@@ -111,7 +167,18 @@ def markdown_report(report: dict) -> str:
             f"| {values['embedding_parameters']:,} | {reduction:.1f}× "
             f"| {speed['mean']:.1f} ± {speed['std']:.1f} |"
         )
-    lines.extend(["", "The table reports experimental evidence, not a mathematical proof of injectivity.", ""])
+    lines.extend([
+        "", "## Acceptance criteria", "",
+        "| Criterion | Measured | Required | Status |",
+        "|---|---:|---:|:---:|",
+    ])
+    for item in report["criteria"]:
+        suffix = "%" if item["unit"] == "percent" else "×"
+        lines.append(
+            f"| {item['description']} | {item['measured']:.2f}{suffix} "
+            f"| {item['operator']} {item['threshold']:.2f}{suffix} | **{item['status']}** |"
+        )
+    lines.extend(["", "The verdict applies only to these predeclared empirical criteria; it is not a proof of injectivity.", ""])
     return "\n".join(lines)
 
 
@@ -120,12 +187,19 @@ def main() -> None:
     parser.add_argument("--input", type=Path, required=True)
     parser.add_argument("--arms", nargs="+", default=["dense", "kronecker", "fourier"])
     parser.add_argument("--seeds", nargs="+", type=int, default=[1337, 2027, 3407])
-    parser.add_argument("--json-output", type=Path, default=Path("training_summary.json"))
+    parser.add_argument("--json-output", type=Path, default=Path("training_results.json"))
     parser.add_argument("--markdown-output", type=Path, default=Path("training_summary.md"))
+    parser.add_argument("--max-fourier-ppl-regression-pct", type=float, default=3.0)
+    parser.add_argument("--min-fourier-reduction-vs-kronecker", type=float, default=16.0)
     args = parser.parse_args()
     runs = load_runs(args.input)
     validate_matrix(runs, args.arms, args.seeds)
-    report = aggregate(runs, args.arms)
+    report = aggregate(
+        runs,
+        args.arms,
+        max_fourier_ppl_regression_pct=args.max_fourier_ppl_regression_pct,
+        min_fourier_reduction_vs_kronecker=args.min_fourier_reduction_vs_kronecker,
+    )
     args.json_output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     args.markdown_output.write_text(markdown_report(report), encoding="utf-8")
 

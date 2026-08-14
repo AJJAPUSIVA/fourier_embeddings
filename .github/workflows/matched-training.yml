@@ -130,8 +130,14 @@ jobs:
           python experiments/aggregate_training.py \
             --input training-runs \
             --seeds "${seeds[@]}" \
-            --json-output training_summary.json \
+            --json-output training_results.json \
             --markdown-output training_summary.md
+
+      - name: Generate benchmark plots
+        run: |
+          python experiments/plot_benchmarks.py \
+            --input training_results.json \
+            --output-dir benchmark-plots
 
       - name: Add report to job summary
         run: cat training_summary.md >> "$GITHUB_STEP_SUMMARY"
@@ -142,6 +148,7 @@ jobs:
           name: deterministic-training-${{ inputs.profile }}
           path: |
             training-runs/*.json
-            training_summary.json
+            training_results.json
             training_summary.md
+            benchmark-plots/*.svg
           retention-days: 30
