@@ -189,11 +189,28 @@ Exact and quantized collision counts cover the full requested vocabulary. The
 more expensive cosine search is exact within the deterministic prefix selected
 by `--near-max-tokens`; increase that value to cover the complete vocabulary.
 
-Run the matched training experiment:
+The training proof is intentionally run as matched single-arm jobs. For a
+local one-arm smoke run:
 
 ```bash
-python experiments/train_proof.py
+python experiments/train_proof.py \
+  --embedding fourier \
+  --seed 1337 \
+  --dataset synthetic \
+  --max-tokens 50000 \
+  --max-steps 100 \
+  --output training-fourier-1337.json
 ```
+
+Without local Python, open **Actions → Deterministic matched training → Run
+workflow**. Run the `smoke` profile first. It executes Dense, Kronecker, and
+Fourier with seed 1337. After it passes, run `proof`, which uses seeds 1337,
+2027, and 3407 on WikiText-2. Each arm receives identical shared-model
+initialization, data order, effective batch size, optimizer settings, and step
+count. The workflow uploads individual JSON records plus an aggregate Markdown
+table containing mean ± standard deviation.
+
+Do not enable `allow_nondeterministic` for final assignment evidence.
 
 The training comparison keeps the tokenizer, corpus, transformer shape,
 optimizer, steps, and output head fixed. The experimental arms are:
@@ -211,7 +228,7 @@ For a strong submission, sweep:
 
 ```text
 D ∈ {64, 128, 256, 512, 1024}
-seed ∈ {1, 2, 3}
+seed ∈ {1337, 2027, 3407}
 ```
 
 Measure both exact and near collisions. Exact floating-point equality alone is

@@ -1,0 +1,147 @@
+name: Deterministic matched training
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Smoke: 100 steps/one seed; proof: 1000 steps/three seeds"
+        required: true
+        type: choice
+        default: smoke
+        options:
+          - smoke
+          - proof
+      fourier_dimension:
+        description: "Selected even Fourier codec dimension"
+        required: true
+        default: "512"
+      allow_nondeterministic:
+        description: "Permit faster nondeterministic kernels (not valid for final evidence)"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  train:
+    name: ${{ matrix.embedding }} / seed ${{ matrix.seed }}
+    strategy:
+      fail-fast: false
+      matrix:
+        embedding: [dense, kronecker, fourier]
+        seed: ${{ fromJSON(inputs.profile == 'proof' && '[1337,2027,3407]' || '[1337]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      PROFILE: ${{ inputs.profile }}
+      FOURIER_DIMENSION: ${{ inputs.fourier_dimension }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Validate inputs
+        shell: bash
+        run: |
+          [[ "$FOURIER_DIMENSION" =~ ^[0-9]+$ ]]
+          (( FOURIER_DIMENSION > 0 && FOURIER_DIMENSION % 2 == 0 ))
+
+      - name: Install project and experiment dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Select matched profile
+        shell: bash
+        run: |
+          if [[ "$PROFILE" == "smoke" ]]; then
+            echo "DATASET=synthetic" >> "$GITHUB_ENV"
+            echo "MAX_TOKENS=50000" >> "$GITHUB_ENV"
+            echo "MAX_STEPS=100" >> "$GITHUB_ENV"
+          else
+            echo "DATASET=wikitext" >> "$GITHUB_ENV"
+            echo "MAX_TOKENS=500000" >> "$GITHUB_ENV"
+            echo "MAX_STEPS=1000" >> "$GITHUB_ENV"
+          fi
+
+      - name: Train matched arm
+        shell: bash
+        run: |
+          extra=()
+          if [[ "${{ inputs.allow_nondeterministic }}" == "true" ]]; then
+            extra+=(--allow-nondeterministic)
+          fi
+          python experiments/train_proof.py \
+            --embedding "${{ matrix.embedding }}" \
+            --seed "${{ matrix.seed }}" \
+            --dataset "$DATASET" \
+            --max-tokens "$MAX_TOKENS" \
+            --max-steps "$MAX_STEPS" \
+            --sequence-length 128 \
+            --batch-size 4 \
+            --grad-accumulation 8 \
+            --fourier-dim "$FOURIER_DIMENSION" \
+            --output "training-${{ matrix.embedding }}-${{ matrix.seed }}.json" \
+            "${extra[@]}"
+
+      - name: Upload arm result
+        uses: actions/upload-artifact@v4
+        with:
+          name: training-${{ matrix.embedding }}-${{ matrix.seed }}
+          path: training-${{ matrix.embedding }}-${{ matrix.seed }}.json
+          retention-days: 30
+
+  aggregate:
+    name: Aggregate matched results
+    needs: train
+    if: ${{ always() && needs.train.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Download run results
+        uses: actions/download-artifact@v5
+        with:
+          pattern: training-*
+          path: training-runs
+          merge-multiple: true
+
+      - name: Aggregate and validate matrix
+        shell: bash
+        run: |
+          seeds=(1337)
+          if [[ "${{ inputs.profile }}" == "proof" ]]; then
+            seeds=(1337 2027 3407)
+          fi
+          python experiments/aggregate_training.py \
+            --input training-runs \
+            --seeds "${seeds[@]}" \
+            --json-output training_summary.json \
+            --markdown-output training_summary.md
+
+      - name: Add report to job summary
+        run: cat training_summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload combined report
+        uses: actions/upload-artifact@v4
+        with:
+          name: deterministic-training-${{ inputs.profile }}
+          path: |
+            training-runs/*.json
+            training_summary.json
+            training_summary.md
+          retention-days: 30
