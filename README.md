@@ -5,10 +5,18 @@ Fourier wave and the waves added to form a word?
 
 ## Result-based verdict
 
-**PASS for the committed empirical criteria; not a universal proof.** Fourier-512
-kept mean validation perplexity within 2.73% of Kronecker while using 16× fewer
-embedding parameters. The full criterion table and limitations are in
-[`results/benchmark_results.md`](results/benchmark_results.md).
+The committed benchmark verdict is **PASS**, under two predeclared criteria.
+This is empirical evidence for the tested configuration, not a universal proof.
+
+| Decision criterion | Required | Measured | Verdict |
+|:---|---:|---:|:---:|
+| Fourier validation-PPL regression vs Kronecker | ≤ 3.00% | 2.73% | **PASS** |
+| Embedding-parameter reduction vs Kronecker | ≥ 16.00× | 16.00× | **PASS** |
+
+The result comes from nine deterministic WikiText-2 runs: three embedding
+families × three matched seeds. See
+[`results/benchmark_results.md`](results/benchmark_results.md) for the complete
+measurements, collision analysis, plots, and interpretation limits.
 
 The construction requires byte and position on **independent frequency
 axes**. The first prototype used identical
@@ -20,19 +28,21 @@ The revised codec is a compact, deterministic sample of the two-dimensional
 discrete Fourier transform (2-D DFT) of a byte-position event grid. It is a
 probabilistic/empirical compression, not a proof of collision-free encoding.
 
-| Property | Kronecker | Revised Fourier |
-|---|---:|---:|
-| Default codec dimension | 8,192 | 512 (sweepable) |
-| Projection parameters | `8192 × d_model` | `D × d_model` |
-| Vocabulary-dependent parameters | No | No |
-| Byte-position basis | Complete sparse grid | Sampled dense 2-D Fourier features |
-| Order-sensitive | Yes | Yes, tested adversarially |
-| Collision guarantee | Exact before truncation | No universal guarantee; measure it |
-| Configured input bound | `pos_dim` | `max_byte_len` buffer bound |
+| Design aspect | Kronecker (`pos_dim=32`) | Fourier (`D=512`) | Practical consequence |
+|:---|:---|:---|:---|
+| Codec dimension | 8,192 | 512 | Fourier projection is 16× smaller |
+| Projection shape | `8192 × d_model` | `512 × d_model` | 2,097,152 vs 131,072 parameters at `d_model=256` |
+| Vocabulary-dependent parameters | None | None | Both extend without a learned vocabulary table |
+| Byte-position representation | Complete sparse grid | Sampled dense 2-D Fourier features | Fourier exchanges completeness for compression |
+| Token order | Encoded explicitly | Encoded through the position-frequency axis | Fourier passed adversarial order tests |
+| Collision statement | Exact for retained bytes; tokens are truncated at 32 bytes | No universal guarantee | Fourier had 0 measured exact/quantized groups over 50,257 GPT-2 IDs |
+| Configured byte bound | 32 | 256 in this experiment | Fourier distinguishes more long-token bytes, but remains bounded |
+| Mean validation PPL | 563.59 ± 7.36 | 578.97 ± 3.32 | Fourier regression was 2.73%, inside the 3% criterion |
 
-At `D=512`, the Fourier projection is 16× smaller than a Kronecker projection
-with `pos_dim=32`. Whether that compression preserves language-model quality
-is an experimental question addressed by `train_proof.py`.
+The table separates architectural facts from measured outcomes. The PASS
+verdict means that Fourier-512 met the stated quality and compression thresholds
+in this experiment; it does not mean the codec is collision-free for arbitrary
+strings or superior on every language-model task.
 
 ## Codec
 
