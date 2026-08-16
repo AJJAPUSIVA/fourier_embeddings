@@ -26,7 +26,8 @@ This revision fixes that alias and includes it as a regression test.
 
 The revised codec is a compact, deterministic sample of the two-dimensional
 discrete Fourier transform (2-D DFT) of a byte-position event grid. It is a
-probabilistic/empirical compression, not a proof of collision-free encoding.
+compressed measurement whose collision behavior must be tested empirically,
+not a proof of collision-free encoding.
 
 | Design aspect | Kronecker (`pos_dim=32`) | Fourier (`D=512`) | Practical consequence |
 |:---|:---|:---|:---|
@@ -43,6 +44,21 @@ The table separates architectural facts from measured outcomes. The PASS
 verdict means that Fourier-512 met the stated quality and compression thresholds
 in this experiment; it does not mean the codec is collision-free for arbitrary
 strings or superior on every language-model task.
+
+## Scientific foundation
+
+The construction is motivated by Random Fourier Features, sinusoidal and
+multidimensional positional encoding, byte-level language modeling, and prior
+embedding-compression methods. Those papers motivate the design; the benchmark
+and collision artifacts in this repository provide evidence for this particular
+codec.
+
+- [`docs/theory.md`](docs/theory.md) derives the implementation-matched codec,
+  proves the original shared-axis alias, and states the claim boundaries.
+- [`docs/references.md`](docs/references.md) gives the primary-paper bibliography
+  and explains how each source relates to the project.
+- [`results/benchmark_results.md`](results/benchmark_results.md) reports the
+  committed empirical measurements and limitations.
 
 ## Codec
 
@@ -134,6 +150,9 @@ equivalent to the unchunked formulation; regression tests compare both paths.
 ├── pyproject.toml
 ├── README.md
 ├── requirements.txt
+├── docs/
+│   ├── theory.md         # implementation-matched derivation and limits
+│   └── references.md     # annotated primary-paper bibliography
 ├── fourier_embedding/
 │   ├── __init__.py
 │   ├── codec.py          # deterministic 2-D Fourier feature codec
