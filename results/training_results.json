@@ -7,7 +7,11 @@
     "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
     "tokenizer": "gpt2",
     "deterministic": true,
-    "seeds": [1337, 2027, 3407],
+    "seeds": [
+      1337,
+      2027,
+      3407
+    ],
     "model_config": {
       "vocab_size": 50257,
       "d_model": 256,
@@ -50,43 +54,153 @@
       "status": "PASS"
     }
   ],
+  "comparisons": {
+    "fourier_vs_kronecker": {
+      "paired_seeds": [
+        1337,
+        2027,
+        3407
+      ],
+      "validation_perplexity": {
+        "absolute_aggregate_mean_difference": 15.37560840980018,
+        "aggregate_mean_regression_pct": 2.7281333554599607,
+        "paired_regression_pct": {
+          "mean": 2.7355759381403852,
+          "std": 0.9142364002862431,
+          "values": [
+            1.7577252813141042,
+            2.879995438857308,
+            3.569007094249743
+          ],
+          "n": 3,
+          "ci95": [
+            0.46448681860221575,
+            5.006665057678555
+          ],
+          "ci95_method": "two-sided Student t interval",
+          "degrees_of_freedom": 2
+        },
+        "worst_seed_regression_pct": 3.569007094249743
+      },
+      "embedding_projection": {
+        "kronecker_parameters": 2097152,
+        "fourier_parameters": 131072,
+        "reduction_factor": 16.0,
+        "reduction_pct": 93.75,
+        "float32_weight_memory_bytes": {
+          "kronecker": 8388608,
+          "fourier": 524288
+        },
+        "float32_weight_memory_mib": {
+          "kronecker": 8.0,
+          "fourier": 0.5
+        }
+      }
+    }
+  },
   "arms": {
     "dense": {
-      "seeds": [1337, 2027, 3407],
-      "validation_loss": {"mean": 7.044872490564982, "std": 0.006762376552999873},
-      "validation_perplexity": {"mean": 1146.9800391481313, "std": 7.741418494259295},
-      "elapsed_s": {"mean": 3522.588317609667, "std": 74.76845605037983},
-      "tokens_per_second": {"mean": 1163.1264812749548, "std": 24.39041359944403},
+      "seeds": [
+        1337,
+        2027,
+        3407
+      ],
+      "validation_loss": {
+        "mean": 7.044872490564982,
+        "std": 0.006762376552999873
+      },
+      "validation_perplexity": {
+        "mean": 1146.9800391481313,
+        "std": 7.741418494259295
+      },
+      "elapsed_s": {
+        "mean": 3522.588317609667,
+        "std": 74.76845605037983
+      },
+      "tokens_per_second": {
+        "mean": 1163.1264812749548,
+        "std": 24.39041359944403
+      },
       "embedding_parameters": 12865792,
       "total_parameters": 28923904,
-      "raw_embedding_rms": {"mean": 0.006291573556760947, "std": 0.0000028128401915292916},
-      "normalized_embedding_rms": {"mean": 0.9998728434244791, "std": 0.00000009104759881806056},
+      "raw_embedding_rms": {
+        "mean": 0.006291573556760947,
+        "std": 2.8128401915292916e-06
+      },
+      "normalized_embedding_rms": {
+        "mean": 0.9998728434244791,
+        "std": 9.104759881806056e-08
+      },
       "perplexity_change_vs_dense_pct": 0.0,
       "embedding_parameter_reduction_vs_dense": 1.0
     },
     "kronecker": {
-      "seeds": [1337, 2027, 3407],
-      "validation_loss": {"mean": 6.334277971585592, "std": 0.013084396873396218},
-      "validation_perplexity": {"mean": 563.5944584244096, "std": 7.35659223984476},
-      "elapsed_s": {"mean": 3546.959411552333, "std": 655.8231359968871},
-      "tokens_per_second": {"mean": 1184.119474878742, "std": 238.52775542119366},
+      "seeds": [
+        1337,
+        2027,
+        3407
+      ],
+      "validation_loss": {
+        "mean": 6.334277971585592,
+        "std": 0.013084396873396218
+      },
+      "validation_perplexity": {
+        "mean": 563.5944584244096,
+        "std": 7.35659223984476
+      },
+      "elapsed_s": {
+        "mean": 3546.959411552333,
+        "std": 655.8231359968871
+      },
+      "tokens_per_second": {
+        "mean": 1184.119474878742,
+        "std": 238.52775542119366
+      },
       "embedding_parameters": 2097152,
       "total_parameters": 18155264,
-      "raw_embedding_rms": {"mean": 1.402243932088216, "std": 0.009545668093231324},
-      "normalized_embedding_rms": {"mean": 1.0, "std": 0.0},
+      "raw_embedding_rms": {
+        "mean": 1.402243932088216,
+        "std": 0.009545668093231324
+      },
+      "normalized_embedding_rms": {
+        "mean": 1.0,
+        "std": 0.0
+      },
       "perplexity_change_vs_dense_pct": -50.86274920329089,
       "embedding_parameter_reduction_vs_dense": 6.1348876953125
     },
     "fourier": {
-      "seeds": [1337, 2027, 3407],
-      "validation_loss": {"mean": 6.3612398147583, "std": 0.0057370350908731715},
-      "validation_perplexity": {"mean": 578.9700668342098, "std": 3.3180487338442455},
-      "elapsed_s": {"mean": 3530.834567338, "std": 183.3637157828474},
-      "tokens_per_second": {"mean": 1162.0961050019882, "std": 58.64815790327206},
+      "seeds": [
+        1337,
+        2027,
+        3407
+      ],
+      "validation_loss": {
+        "mean": 6.3612398147583,
+        "std": 0.0057370350908731715
+      },
+      "validation_perplexity": {
+        "mean": 578.9700668342098,
+        "std": 3.3180487338442455
+      },
+      "elapsed_s": {
+        "mean": 3530.834567338,
+        "std": 183.3637157828474
+      },
+      "tokens_per_second": {
+        "mean": 1162.0961050019882,
+        "std": 58.64815790327206
+      },
       "embedding_parameters": 131072,
       "total_parameters": 16189184,
-      "raw_embedding_rms": {"mean": 1.1476078033447266, "std": 0.010532479795488124},
-      "normalized_embedding_rms": {"mean": 1.0, "std": 0.0},
+      "raw_embedding_rms": {
+        "mean": 1.1476078033447266,
+        "std": 0.010532479795488124
+      },
+      "normalized_embedding_rms": {
+        "mean": 1.0,
+        "std": 0.0
+      },
       "perplexity_change_vs_dense_pct": -49.52221947434986,
       "embedding_parameter_reduction_vs_dense": 98.158203125
     }

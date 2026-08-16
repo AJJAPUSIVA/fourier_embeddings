@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import statistics
 from collections import defaultdict
 from pathlib import Path
@@ -64,6 +65,43 @@ def mean_std(values: list[float]) -> dict[str, float]:
     }
 
 
+_T_CRITICAL_975 = (
+    12.706204736, 4.302652730, 3.182446305, 2.776445105, 2.570581836,
+    2.446911851, 2.364624252, 2.306004135, 2.262157163, 2.228138852,
+    2.200985160, 2.178812830, 2.160368656, 2.144786688, 2.131449546,
+    2.119905299, 2.109815578, 2.100922040, 2.093024054, 2.085963447,
+    2.079613845, 2.073873068, 2.068657610, 2.063898562, 2.059538553,
+    2.055529439, 2.051830516, 2.048407142, 2.045229642, 2.042272456,
+)
+
+
+def mean_std_ci95(values: list[float]) -> dict[str, object]:
+    """Return sample statistics and a two-sided 95% Student-t interval."""
+    result: dict[str, object] = mean_std(values)
+    result["values"] = values
+    result["n"] = len(values)
+    if len(values) < 2:
+        result["ci95"] = None
+        result["ci95_method"] = "unavailable with fewer than two paired observations"
+        return result
+    degrees_of_freedom = len(values) - 1
+    if degrees_of_freedom <= len(_T_CRITICAL_975):
+        critical = _T_CRITICAL_975[degrees_of_freedom - 1]
+    elif degrees_of_freedom <= 40:
+        critical = _T_CRITICAL_975[-1]
+    elif degrees_of_freedom <= 60:
+        critical = 2.021075390
+    elif degrees_of_freedom <= 120:
+        critical = 2.000297822
+    else:
+        critical = 1.979930406
+    margin = critical * float(result["std"]) / math.sqrt(len(values))
+    result["ci95"] = [float(result["mean"]) - margin, float(result["mean"]) + margin]
+    result["ci95_method"] = "two-sided Student t interval"
+    result["degrees_of_freedom"] = degrees_of_freedom
+    return result
+
+
 def aggregate(
     runs: list[dict],
     arms: list[str],
@@ -95,6 +133,7 @@ def aggregate(
             values["perplexity_change_vs_dense_pct"] = 100 * (values["validation_perplexity"]["mean"] / dense_ppl - 1)
             values["embedding_parameter_reduction_vs_dense"] = dense_params / max(values["embedding_parameters"], 1)
     criteria = []
+    comparisons = {}
     if "fourier" in summary and "kronecker" in summary:
         fourier = summary["fourier"]
         kronecker = summary["kronecker"]
@@ -106,6 +145,50 @@ def aggregate(
         parameter_reduction = (
             kronecker["embedding_parameters"] / fourier["embedding_parameters"]
         )
+        fourier_by_seed = {
+            run["seed"]: run for run in grouped["fourier"]
+        }
+        kronecker_by_seed = {
+            run["seed"]: run for run in grouped["kronecker"]
+        }
+        paired_seeds = sorted(set(fourier_by_seed) & set(kronecker_by_seed))
+        paired_regressions = [
+            100 * (
+                fourier_by_seed[seed]["final_validation_perplexity"]
+                / kronecker_by_seed[seed]["final_validation_perplexity"]
+                - 1
+            )
+            for seed in paired_seeds
+        ]
+        absolute_ppl_difference = (
+            fourier["validation_perplexity"]["mean"]
+            - kronecker["validation_perplexity"]["mean"]
+        )
+        fourier_memory_bytes = fourier["embedding_parameters"] * 4
+        kronecker_memory_bytes = kronecker["embedding_parameters"] * 4
+        comparisons["fourier_vs_kronecker"] = {
+            "paired_seeds": paired_seeds,
+            "validation_perplexity": {
+                "absolute_aggregate_mean_difference": absolute_ppl_difference,
+                "aggregate_mean_regression_pct": ppl_regression,
+                "paired_regression_pct": mean_std_ci95(paired_regressions),
+                "worst_seed_regression_pct": max(paired_regressions),
+            },
+            "embedding_projection": {
+                "kronecker_parameters": kronecker["embedding_parameters"],
+                "fourier_parameters": fourier["embedding_parameters"],
+                "reduction_factor": parameter_reduction,
+                "reduction_pct": 100 * (1 - 1 / parameter_reduction),
+                "float32_weight_memory_bytes": {
+                    "kronecker": kronecker_memory_bytes,
+                    "fourier": fourier_memory_bytes,
+                },
+                "float32_weight_memory_mib": {
+                    "kronecker": kronecker_memory_bytes / (1024 ** 2),
+                    "fourier": fourier_memory_bytes / (1024 ** 2),
+                },
+            },
+        }
         criteria.extend([
             {
                 "id": "fourier_quality_vs_kronecker",
@@ -143,6 +226,7 @@ def aggregate(
         },
         "overall_status": overall,
         "criteria": criteria,
+        "comparisons": comparisons,
         "arms": summary,
     }
 
@@ -178,6 +262,26 @@ def markdown_report(report: dict) -> str:
             f"| {item['description']} | {item['measured']:.2f}{suffix} "
             f"| {item['operator']} {item['threshold']:.2f}{suffix} | **{item['status']}** |"
         )
+    comparison = report.get("comparisons", {}).get("fourier_vs_kronecker")
+    if comparison:
+        ppl = comparison["validation_perplexity"]
+        paired = ppl["paired_regression_pct"]
+        projection = comparison["embedding_projection"]
+        ci = paired["ci95"]
+        ci_text = "unavailable" if ci is None else f"[{ci[0]:.2f}%, {ci[1]:.2f}%]"
+        lines.extend([
+            "", "## Derived Fourier–Kronecker comparison", "",
+            "These descriptive statistics do not add or change acceptance criteria.", "",
+            "| Quantity | Value |", "|---|---:|",
+            f"| Absolute aggregate-mean validation PPL difference | {ppl['absolute_aggregate_mean_difference']:.2f} |",
+            f"| Aggregate-mean validation PPL regression | {ppl['aggregate_mean_regression_pct']:.2f}% |",
+            f"| Mean paired validation PPL regression | {paired['mean']:.2f}% |",
+            f"| Paired-regression sample standard deviation | {paired['std']:.2f}% |",
+            f"| Paired-regression 95% Student-t interval | {ci_text} |",
+            f"| Worst-seed validation PPL regression | {ppl['worst_seed_regression_pct']:.2f}% |",
+            f"| Projection-parameter reduction | {projection['reduction_factor']:.2f}× ({projection['reduction_pct']:.2f}% fewer) |",
+            f"| Raw float32 projection-weight storage | {projection['float32_weight_memory_mib']['kronecker']:.2f} MiB → {projection['float32_weight_memory_mib']['fourier']:.2f} MiB |",
+        ])
     lines.extend(["", "The verdict applies only to these explicit committed empirical criteria; it is not a proof of injectivity.", ""])
     return "\n".join(lines)
 

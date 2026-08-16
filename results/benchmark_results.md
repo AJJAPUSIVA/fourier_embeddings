@@ -31,6 +31,26 @@ Fourier's paired validation-PPL regression relative to Kronecker was 1.76%,
 Throughput is reported but not used as a pass criterion because hosted-runner
 variance was large, particularly for Kronecker.
 
+### Derived Fourier–Kronecker statistics
+
+These are descriptive statistics generated from the same committed runs. They
+do not add or change the two acceptance criteria.
+
+| Quantity | Value |
+|---|---:|
+| Absolute aggregate-mean validation PPL difference | 15.38 |
+| Aggregate-mean validation PPL regression | 2.73% |
+| Mean paired validation PPL regression | 2.74% |
+| Paired-regression sample standard deviation | 0.91% |
+| Paired-regression 95% Student-t interval | [0.46%, 5.01%] |
+| Worst-seed validation PPL regression | 3.57% |
+| Projection-parameter reduction | 16.00× (93.75% fewer) |
+| Raw float32 projection-weight storage | 8.00 MiB → 0.50 MiB |
+
+The paired interval is wide because it contains only three seed pairs. Raw
+float32 weight storage excludes gradients, optimizer state, activations, and
+the rest of the model; it is not an end-to-end memory or speed claim.
+
 ![Validation perplexity](plots/validation_perplexity.svg)
 
 ![Embedding parameters](plots/embedding_parameters.svg)
