@@ -190,7 +190,6 @@ outside the evaluated scope.
 │       ├── nearest_cosine_distribution.svg
 │       ├── dimension_vs_perplexity.svg
 │       └── parameters_vs_perplexity.svg
-└── index.html                 # interactive explanation
 ```
 
 ## Usage
