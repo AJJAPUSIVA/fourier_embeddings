@@ -1,0 +1,89 @@
+name: Fourier dimension sweep
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Smoke uses one seed/100 steps; proof uses three seeds/1000 steps"
+        type: choice
+        options: [smoke, proof]
+        default: smoke
+      allow_nondeterministic:
+        description: "Not valid for final evidence"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  train:
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.profile == 'proof' && '[{"embedding":"kronecker","dimension":512,"seed":1337},{"embedding":"kronecker","dimension":512,"seed":2027},{"embedding":"kronecker","dimension":512,"seed":3407},{"embedding":"fourier","dimension":128,"seed":1337},{"embedding":"fourier","dimension":128,"seed":2027},{"embedding":"fourier","dimension":128,"seed":3407},{"embedding":"fourier","dimension":256,"seed":1337},{"embedding":"fourier","dimension":256,"seed":2027},{"embedding":"fourier","dimension":256,"seed":3407},{"embedding":"fourier","dimension":512,"seed":1337},{"embedding":"fourier","dimension":512,"seed":2027},{"embedding":"fourier","dimension":512,"seed":3407},{"embedding":"fourier","dimension":1024,"seed":1337},{"embedding":"fourier","dimension":1024,"seed":2027},{"embedding":"fourier","dimension":1024,"seed":3407}]' || '[{"embedding":"kronecker","dimension":512,"seed":1337},{"embedding":"fourier","dimension":128,"seed":1337},{"embedding":"fourier","dimension":256,"seed":1337},{"embedding":"fourier","dimension":512,"seed":1337}]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: python -m pip install -e ".[dev]"
+      - name: Train sweep arm
+        shell: bash
+        run: |
+          if [[ "${{ inputs.profile }}" == "proof" ]]; then
+            dataset=wikitext; tokens=500000; steps=1000
+          else
+            dataset=synthetic; tokens=50000; steps=100
+          fi
+          extra=()
+          if [[ "${{ inputs.allow_nondeterministic }}" == "true" ]]; then extra+=(--allow-nondeterministic); fi
+          python experiments/train_proof.py \
+            --embedding "${{ matrix.embedding }}" --seed "${{ matrix.seed }}" \
+            --dataset "$dataset" --max-tokens "$tokens" --max-steps "$steps" \
+            --sequence-length 128 --batch-size 4 --grad-accumulation 8 \
+            --fourier-dim "${{ matrix.dimension }}" \
+            --output "sweep-${{ matrix.embedding }}-${{ matrix.dimension }}-${{ matrix.seed }}.json" \
+            "${extra[@]}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sweep-${{ matrix.embedding }}-${{ matrix.dimension }}-${{ matrix.seed }}
+          path: sweep-*.json
+          retention-days: 30
+
+  aggregate:
+    needs: train
+    if: ${{ always() && needs.train.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: sweep-*
+          path: sweep-runs
+          merge-multiple: true
+      - name: Aggregate sweep
+        shell: bash
+        run: |
+          dimensions=(128 256 512); seeds=(1337)
+          if [[ "${{ inputs.profile }}" == "proof" ]]; then dimensions+=(1024); seeds+=(2027 3407); fi
+          python experiments/aggregate_dimension_sweep.py --input sweep-runs \
+            --dimensions "${dimensions[@]}" --seeds "${seeds[@]}" \
+            --json-output dimension_sweep.json --markdown-output dimension_sweep.md
+          python experiments/plot_dimension_sweep.py --input dimension_sweep.json --output-dir sweep-plots
+      - run: cat dimension_sweep.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fourier-dimension-sweep-${{ inputs.profile }}
+          path: |
+            sweep-runs/*.json
+            dimension_sweep.json
+            dimension_sweep.md
+            sweep-plots/*.svg
+          retention-days: 30

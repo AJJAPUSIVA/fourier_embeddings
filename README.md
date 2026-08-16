@@ -282,6 +282,12 @@ every result.
 
 Do not enable `allow_nondeterministic` for final assignment evidence.
 
+For the exploratory quality–compression curve, open **Actions → Fourier
+dimension sweep**. Run `smoke` first, then `proof`. The proof profile evaluates
+Fourier dimensions 128, 256, 512, and 1024 against a matched Kronecker baseline
+over seeds 1337, 2027, and 3407. Its report is explicitly descriptive and does
+not create a post-hoc PASS/FAIL threshold.
+
 The training comparison keeps the tokenizer, corpus, transformer shape,
 optimizer, steps, and output head fixed. The experimental arms are:
 
