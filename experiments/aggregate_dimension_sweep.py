@@ -7,7 +7,20 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-from experiments.aggregate_training import MATCHED_FIELDS, mean_std, mean_std_ci95, nested
+try:
+    from experiments.aggregate_training import (
+        MATCHED_FIELDS,
+        mean_std,
+        mean_std_ci95,
+        nested,
+    )
+except ModuleNotFoundError:  # Direct execution as experiments/aggregate_dimension_sweep.py.
+    from aggregate_training import (  # type: ignore[no-redef]
+        MATCHED_FIELDS,
+        mean_std,
+        mean_std_ci95,
+        nested,
+    )
 
 
 def load_runs(root: Path) -> list[dict]:
