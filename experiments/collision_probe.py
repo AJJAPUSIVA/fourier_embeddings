@@ -169,6 +169,9 @@ def encode_vocabulary(
     dimension: int,
     batch_size: int,
     frequency_chunk_size: int,
+    *,
+    length_normalize: bool = True,
+    z_normalize: bool = True,
 ) -> torch.Tensor:
     chunks = []
     for start in range(0, len(raw_bytes), batch_size):
@@ -183,6 +186,8 @@ def encode_vocabulary(
             buffer,
             lengths,
             D=dimension,
+            length_normalize=length_normalize,
+            z_normalize=z_normalize,
             frequency_chunk_size=frequency_chunk_size,
         ).cpu())
     return torch.cat(chunks, dim=0) if chunks else torch.empty((0, dimension))

@@ -1,0 +1,91 @@
+name: Fourier representation diagnostics
+
+on:
+  workflow_dispatch:
+    inputs:
+      dimension:
+        description: "Positive even Fourier codec dimension"
+        required: true
+        default: "512"
+      max_tokens:
+        description: "Tokenizer IDs for norm and collision analysis"
+        required: true
+        default: "50257"
+      near_max_tokens:
+        description: "Deterministic prefix used for all-pairs neighbor analysis"
+        required: true
+        default: "10000"
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      DIMENSION: ${{ inputs.dimension }}
+      MAX_TOKENS: ${{ inputs.max_tokens }}
+      NEAR_MAX_TOKENS: ${{ inputs.near_max_tokens }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Validate workflow inputs
+        shell: bash
+        run: |
+          [[ "$DIMENSION" =~ ^[0-9]+$ ]]
+          (( DIMENSION > 0 && DIMENSION % 2 == 0 ))
+          [[ "$MAX_TOKENS" =~ ^[0-9]+$ ]]
+          (( MAX_TOKENS > 0 ))
+          [[ "$NEAR_MAX_TOKENS" =~ ^[0-9]+$ ]]
+          (( NEAR_MAX_TOKENS > 0 ))
+
+      - name: Install project
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Run representation diagnostics
+        run: |
+          python experiments/analyze_representation.py \
+            --tokenizer gpt2 \
+            --dimension "$DIMENSION" \
+            --max-tokens "$MAX_TOKENS" \
+            --near-max-tokens "$NEAR_MAX_TOKENS" \
+            --output representation_analysis.json \
+            --plot-dir representation_plots
+
+      - name: Write job summary
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          r = json.load(open("representation_analysis.json", encoding="utf-8"))
+          n = r["nearest_neighbors"]
+          def number(value):
+              return "n/a" if value is None else f"{value:.6f}"
+          print("## Fourier representation diagnostics")
+          print()
+          print(f"- Dimension: {r['dimension']}")
+          print(f"- Norm/collision tokens: {r['scope']['norm_and_collision_tokens']:,}")
+          print(f"- Neighbor-search tokens: {r['scope']['nearest_neighbor_tokens']:,}")
+          print(f"- Exact collision groups: {r['collisions']['exact']['collision_groups']}")
+          print(f"- Minimum Euclidean distance: {number(n['nearest_distinct_euclidean']['summary']['min'])}")
+          print(f"- Minimum cosine margin: {number(n['cosine_self_retrieval_margin']['summary']['min'])}")
+          PY
+
+      - name: Upload representation report
+        uses: actions/upload-artifact@v4
+        with:
+          name: fourier-representation-diagnostics
+          path: |
+            representation_analysis.json
+            representation_plots/*.svg
+          retention-days: 30

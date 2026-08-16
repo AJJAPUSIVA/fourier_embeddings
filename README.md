@@ -164,6 +164,7 @@ equivalent to the unchunked formulation; regression tests compare both paths.
 │   ├── train_proof.py    # matched tiny-transformer comparison
 │   ├── analysis.py       # codec analysis
 │   ├── collision_probe.py # vocabulary-scale collision report
+│   ├── analyze_representation.py # norm and neighbor diagnostics
 │   └── plot_benchmarks.py # reproducible dependency-free SVG plots
 ├── results/
 │   ├── training_results.json
@@ -229,6 +230,24 @@ distinct byte sequences.
 Exact and quantized collision counts cover the full requested vocabulary. The
 more expensive cosine search is exact within the deterministic prefix selected
 by `--near-max-tokens`; increase that value to cover the complete vocabulary.
+
+Run the representation diagnostics to measure code norm versus byte length,
+nearest-distinct cosine similarity, Euclidean distance, retrieval margin, and
+exact/4-decimal collision groups:
+
+```bash
+python experiments/analyze_representation.py \
+  --tokenizer gpt2 \
+  --dimension 512 \
+  --max-tokens 50257 \
+  --near-max-tokens 10000
+```
+
+Without local Python, open **Actions → Fourier representation diagnostics →
+Run workflow**. The workflow uploads `representation_analysis.json`,
+`norm_by_length.svg`, and `nearest_cosine_distribution.svg`. Norm and collision
+statistics use the requested vocabulary; the quadratic neighbor search uses the
+explicit deterministic prefix selected by `--near-max-tokens`.
 
 The training proof is intentionally run as matched single-arm jobs. For a
 local one-arm smoke run:
