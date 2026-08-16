@@ -51,6 +51,30 @@ The paired interval is wide because it contains only three seed pairs. Raw
 float32 weight storage excludes gradients, optimizer state, activations, and
 the rest of the model; it is not an end-to-end memory or speed claim.
 
+## Descriptive Fourier dimension sweep
+
+A separate proof-profile sweep evaluated four Fourier dimensions against the
+same Kronecker baseline. Each configuration used the pinned WikiText-2 data,
+1,000 steps, and matched seeds 1337, 2027, and 3407. The sweep was declared
+descriptive and has no post-hoc PASS/FAIL threshold.
+
+| Fourier D | Validation PPL | Mean paired change | 95% paired Student-t CI | Embedding params | Reduction |
+|---:|---:|---:|---:|---:|---:|
+| 128 | 574.89 ± 8.73 | +2.01% | [−1.73%, 5.75%] | 32,768 | 64× |
+| 256 | 565.23 ± 10.39 | +0.29% | [−1.08%, 1.65%] | 65,536 | 32× |
+| 512 | 578.97 ± 3.32 | +2.74% | [0.46%, 5.01%] | 131,072 | 16× |
+| 1024 | 568.01 ± 8.56 | +0.78% | [−0.75%, 2.31%] | 262,144 | 8× |
+
+`D=256` produced the smallest observed mean paired change and a 32× projection
+reduction. However, performance was not monotonic in dimension and every
+interval is based on only three pairs. The sweep therefore identifies a
+promising follow-up configuration; it does not prove that `D=256` is optimal or
+statistically equivalent to Kronecker.
+
+![Dimension versus validation perplexity](plots/dimension_vs_perplexity.svg)
+
+![Embedding parameters versus validation perplexity](plots/parameters_vs_perplexity.svg)
+
 ![Validation perplexity](plots/validation_perplexity.svg)
 
 ![Embedding parameters](plots/embedding_parameters.svg)
@@ -114,7 +138,10 @@ therefore not independent evidence.
 
 Machine-readable values are in [`training_results.json`](training_results.json),
 [`collision_results.json`](collision_results.json), and
-[`representation_analysis.json`](representation_analysis.json).
+[`representation_analysis.json`](representation_analysis.json). The dimension
+sweep aggregate is in [`dimension_sweep.json`](dimension_sweep.json), its
+rendered table is in [`dimension_sweep.md`](dimension_sweep.md), and the 15
+per-arm records are retained in [`dimension_sweep_runs/`](dimension_sweep_runs/).
 Regenerate the training plots with:
 
 ```bash

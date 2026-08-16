@@ -13,8 +13,10 @@ This is empirical evidence for the tested configuration, not a universal proof.
 | Fourier validation-PPL regression vs Kronecker | ≤ 3.00% | 2.73% | **PASS** |
 | Embedding-parameter reduction vs Kronecker | ≥ 16.00× | 16.00× | **PASS** |
 
-The result comes from nine deterministic WikiText-2 runs: three embedding
-families × three matched seeds. See
+The primary result comes from nine deterministic WikiText-2 runs: three
+embedding families × three matched seeds. A separate 15-run descriptive sweep
+compares Fourier dimensions 128, 256, 512, and 1024 with the matched Kronecker
+baseline. See
 [`results/benchmark_results.md`](results/benchmark_results.md) for the complete
 measurements, collision analysis, plots, and interpretation limits.
 
@@ -44,6 +46,24 @@ The table separates architectural facts from measured outcomes. The PASS
 verdict means that Fourier-512 met the stated quality and compression thresholds
 in this experiment; it does not mean the codec is collision-free for arbitrary
 strings or superior on every language-model task.
+
+### Descriptive dimension sweep
+
+The separately committed proof-profile sweep used the same pinned WikiText-2
+configuration, three matched seeds, and 1,000 steps per arm. It is exploratory:
+no PASS/FAIL threshold was selected after seeing these results.
+
+| Fourier D | Mean validation PPL | Mean paired change vs Kronecker | 95% paired CI | Projection reduction |
+|---:|---:|---:|---:|---:|
+| 128 | 574.89 ± 8.73 | +2.01% | [−1.73%, 5.75%] | 64× |
+| 256 | 565.23 ± 10.39 | +0.29% | [−1.08%, 1.65%] | 32× |
+| 512 | 578.97 ± 3.32 | +2.74% | [0.46%, 5.01%] | 16× |
+| 1024 | 568.01 ± 8.56 | +0.78% | [−0.75%, 2.31%] | 8× |
+
+Within this limited sweep, `D=256` had the smallest mean paired regression,
+while `D=128` provided the largest parameter reduction. The non-monotonic
+quality estimates and wide three-seed intervals do not establish an optimal
+dimension; they motivate larger, pre-registered follow-up experiments.
 
 ## Scientific foundation
 
@@ -110,7 +130,7 @@ With `frequency_chunk_size=C`, the largest phase temporary is approximately
 `input_tokens × max_byte_len × D`. The output codes remain mathematically
 equivalent to the unchunked formulation; regression tests compare both paths.
 
-## What is and is not proved
+## Evidence status
 
 ### Established directly
 
@@ -130,18 +150,9 @@ equivalent to the unchunked formulation; regression tests compare both paths.
 - Training throughput and memory, because `sin`/`cos` computation is denser
   than Kronecker's scatter operation.
 
-### Not claimed
-
-- Universal injectivity for arbitrary-length strings. A finite-dimensional
-  additive code cannot provide that guarantee over an unbounded domain.
-- Unlimited token length in `FourierEmbedding`. The pure codec accepts any
-  supplied tensor length, but the tokenizer-backed module uses an explicit
-  `max_byte_len` storage/compute bound (default 256). Dynamic storage is
-  Problem 3, not this submission.
-- Invertibility from the compressed Fourier vector.
-- Performance outside the committed WikiText-2 configuration. The checked-in
-  run passes its stated quality threshold; it does not establish universal
-  language-model parity.
+Results apply to the committed GPT-2 vocabulary analysis and deterministic
+WikiText-2 experiment; broader injectivity and generalization claims are
+outside the evaluated scope.
 
 ## Repository layout
 
@@ -170,10 +181,15 @@ equivalent to the unchunked formulation; regression tests compare both paths.
 │   ├── training_results.json
 │   ├── collision_results.json
 │   ├── representation_analysis.json
+│   ├── dimension_sweep.json
+│   ├── dimension_sweep.md
+│   ├── dimension_sweep_runs/ # 15 per-arm proof records
 │   ├── benchmark_results.md
 │   └── plots/
 │       ├── norm_by_length.svg
-│       └── nearest_cosine_distribution.svg
+│       ├── nearest_cosine_distribution.svg
+│       ├── dimension_vs_perplexity.svg
+│       └── parameters_vs_perplexity.svg
 └── index.html                 # interactive explanation
 ```
 
@@ -298,14 +314,17 @@ optimizer, steps, and output head fixed. The experimental arms are:
 Report validation loss/perplexity, embedding and total parameters, wall-clock
 time, and codec geometry. Run multiple seeds before making a quality claim.
 
-## Required experiment improvements
+## Further experiment improvements
 
-For a strong submission, sweep:
+The committed proof sweep covers:
 
 ```text
-D ∈ {64, 128, 256, 512, 1024}
+D ∈ {128, 256, 512, 1024}
 seed ∈ {1337, 2027, 3407}
 ```
+
+A stronger follow-up should pre-register its selection criterion, add more
+seeds and datasets, and include `D=64` before inspecting the outcomes.
 
 Measure both exact and near collisions. Exact floating-point equality alone is
 too weak; include nearest-neighbour cosine margin and quantized-code collision

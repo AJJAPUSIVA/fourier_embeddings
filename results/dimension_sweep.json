@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "status": "DESCRIPTIVE_ONLY",
+  "status_reason": "The dimension sweep is exploratory and has no post-hoc PASS/FAIL threshold.",
+  "experiment": {
+    "dataset": "wikitext",
+    "dataset_source": "Salesforce/wikitext",
+    "dataset_revision": "b08601e04326c79dfdd32d625aee71d232d685c3",
+    "tokenizer": "gpt2",
+    "seeds": [
+      1337,
+      2027,
+      3407
+    ],
+    "dimensions": [
+      128,
+      256,
+      512,
+      1024
+    ],
+    "model_config": {
+      "vocab_size": 50257,
+      "d_model": 256,
+      "n_heads": 4,
+      "n_layers": 4,
+      "d_ff": 1024,
+      "max_seq_len": 128,
+      "dropout": 0.1
+    },
+    "training": {
+      "max_tokens": 500000,
+      "train_sequences": 3487,
+      "validation_sequences": 388,
+      "batch_size": 4,
+      "grad_accumulation": 8,
+      "effective_batch_size": 32,
+      "max_steps": 1000,
+      "learning_rate": 0.0003,
+      "weight_decay": 0.01
+    }
+  },
+  "kronecker": {
+    "validation_perplexity": {
+      "mean": 563.5948763700401,
+      "std": 7.35675298676509
+    },
+    "embedding_parameters": 2097152,
+    "tokens_per_second": {
+      "mean": 1453.090022097223,
+      "std": 319.5468285467158
+    }
+  },
+  "fourier_dimensions": [
+    {
+      "dimension": 128,
+      "seeds": [
+        1337,
+        2027,
+        3407
+      ],
+      "validation_perplexity": {
+        "mean": 574.8855857295216,
+        "std": 8.732420620457248
+      },
+      "paired_regression_pct": {
+        "mean": 2.0087711020020085,
+        "std": 1.5057113863130858,
+        "values": [
+          2.5556914208548553,
+          0.30603651039249335,
+          3.164585374758677
+        ],
+        "n": 3,
+        "ci95": [
+          -1.7316233359679964,
+          5.749165539972013
+        ],
+        "ci95_method": "two-sided Student t interval",
+        "degrees_of_freedom": 2
+      },
+      "embedding_parameters": 32768,
+      "parameter_reduction_vs_kronecker": 64.0,
+      "tokens_per_second": {
+        "mean": 1188.0020276710272,
+        "std": 52.95252983414813
+      }
+    },
+    {
+      "dimension": 256,
+      "seeds": [
+        1337,
+        2027,
+        3407
+      ],
+      "validation_perplexity": {
+        "mean": 565.2286837149896,
+        "std": 10.390258319193038
+      },
+      "paired_regression_pct": {
+        "mean": 0.28527643798693286,
+        "std": 0.5494613876959639,
+        "values": [
+          0.8474412648363572,
+          0.2589210297242017,
+          -0.25053298059976026
+        ],
+        "n": 3,
+        "ci95": [
+          -1.0796613164187585,
+          1.6502141923926241
+        ],
+        "ci95_method": "two-sided Student t interval",
+        "degrees_of_freedom": 2
+      },
+      "embedding_parameters": 65536,
+      "parameter_reduction_vs_kronecker": 32.0,
+      "tokens_per_second": {
+        "mean": 1332.0839671264318,
+        "std": 280.1654904045568
+      }
+    },
+    {
+      "dimension": 512,
+      "seeds": [
+        1337,
+        2027,
+        3407
+      ],
+      "validation_perplexity": {
+        "mean": 578.9704326027205,
+        "std": 3.317442469574877
+      },
+      "paired_regression_pct": {
+        "mean": 2.735565747331603,
+        "std": 0.9143084461704087,
+        "values": [
+          1.7577252813141042,
+          2.879767324038496,
+          3.569204636642209
+        ],
+        "n": 3,
+        "ci95": [
+          0.4642976558955909,
+          5.006833838767616
+        ],
+        "ci95_method": "two-sided Student t interval",
+        "degrees_of_freedom": 2
+      },
+      "embedding_parameters": 131072,
+      "parameter_reduction_vs_kronecker": 16.0,
+      "tokens_per_second": {
+        "mean": 1224.4436361863684,
+        "std": 133.08295292116063
+      }
+    },
+    {
+      "dimension": 1024,
+      "seeds": [
+        1337,
+        2027,
+        3407
+      ],
+      "validation_perplexity": {
+        "mean": 568.0051117761507,
+        "std": 8.558129494684033
+      },
+      "paired_regression_pct": {
+        "mean": 0.7819160813430001,
+        "std": 0.6163066836304136,
+        "values": [
+          1.3213143887313983,
+          0.11019574937902732,
+          0.9142381059185745
+        ],
+        "n": 3,
+        "ci95": [
+          -0.7490745935562381,
+          2.312906756242238
+        ],
+        "ci95_method": "two-sided Student t interval",
+        "degrees_of_freedom": 2
+      },
+      "embedding_parameters": 262144,
+      "parameter_reduction_vs_kronecker": 8.0,
+      "tokens_per_second": {
+        "mean": 1354.0972425034101,
+        "std": 363.9743584988864
+      }
+    }
+  ]
+}
