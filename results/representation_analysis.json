@@ -1,0 +1,2021 @@
+{
+  "schema_version": 2,
+  "tokenizer": "gpt2",
+  "dimension": 512,
+  "analyzed_tokens": 50257,
+  "normalization_stages": {
+    "raw_sum": {
+      "length_normalize": false,
+      "z_normalize": false
+    },
+    "length_normalized": {
+      "length_normalize": true,
+      "z_normalize": false
+    },
+    "z_normalized": {
+      "length_normalize": true,
+      "z_normalize": true
+    }
+  },
+  "norm_analysis": {
+    "byte_length": {
+      "summary": {
+        "count": 50257,
+        "mean": 6.395686173070418,
+        "std": 2.939074737810576,
+        "min": 1,
+        "max": 128
+      },
+      "quantiles": {
+        "0.0": 1,
+        "0.5": 6,
+        "0.9": 10,
+        "0.99": 14,
+        "1.0": 128
+      }
+    },
+    "stages": {
+      "raw_sum": {
+        "norm": {
+          "count": 50257,
+          "mean": 40.0460424072732,
+          "std": 9.27480895224497,
+          "min": 15.999999046325684,
+          "max": 195.9716033935547
+        },
+        "norm_length_pearson": {
+          "value": 0.9757677335687232,
+          "status": "computed",
+          "relative_constant_tolerance": 0.000001
+        }
+      },
+      "length_normalized": {
+        "norm": {
+          "count": 50257,
+          "mean": 16.204810481750147,
+          "std": 0.2992821596848408,
+          "min": 13.504573822021484,
+          "max": 19.501075744628906
+        },
+        "norm_length_pearson": {
+          "value": 0.33098153571081096,
+          "status": "computed",
+          "relative_constant_tolerance": 0.000001
+        }
+      },
+      "z_normalized": {
+        "norm": {
+          "count": 50257,
+          "mean": 22.60527711586645,
+          "std": 0.0000011373408628144068,
+          "min": 22.60526466369629,
+          "max": 22.605283737182617
+        },
+        "norm_length_pearson": {
+          "value": null,
+          "status": "unavailable_near_constant_right_variable",
+          "relative_constant_tolerance": 0.000001
+        }
+      }
+    },
+    "by_byte_length": [
+      {
+        "byte_length": 1,
+        "count": 128,
+        "raw_sum": {
+          "count": 128,
+          "mean": 15.999999806284904,
+          "std": 3.851944324701064e-7,
+          "min": 15.999999046325684,
+          "max": 16
+        },
+        "length_normalized": {
+          "count": 128,
+          "mean": 15.999999806284904,
+          "std": 3.851944324701064e-7,
+          "min": 15.999999046325684,
+          "max": 16
+        },
+        "z_normalized": {
+          "count": 128,
+          "mean": 22.605276465415955,
+          "std": 0.0000013905291845977332,
+          "min": 22.60526466369629,
+          "max": 22.60527801513672
+        }
+      },
+      {
+        "byte_length": 2,
+        "count": 1742,
+        "raw_sum": {
+          "count": 1742,
+          "mean": 22.683415838826264,
+          "std": 0.18275204921600652,
+          "min": 22.109718322753906,
+          "max": 24.691944122314453
+        },
+        "length_normalized": {
+          "count": 1742,
+          "mean": 16.039596880618248,
+          "std": 0.1292252117603247,
+          "min": 15.633932113647461,
+          "max": 17.459840774536133
+        },
+        "z_normalized": {
+          "count": 1742,
+          "mean": 22.605276809631068,
+          "std": 9.81620484591149e-7,
+          "min": 22.605274200439453,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 3,
+        "count": 5440,
+        "raw_sum": {
+          "count": 5440,
+          "mean": 27.840037587109734,
+          "std": 0.20701865236284858,
+          "min": 26.90969467163086,
+          "max": 29.654808044433594
+        },
+        "length_normalized": {
+          "count": 5440,
+          "mean": 16.073452940933844,
+          "std": 0.1195222712534084,
+          "min": 15.5363187789917,
+          "max": 17.1212100982666
+        },
+        "z_normalized": {
+          "count": 5440,
+          "mean": 22.605276919112487,
+          "std": 0.0000010331088346441988,
+          "min": 22.605268478393555,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 4,
+        "count": 7254,
+        "raw_sum": {
+          "count": 7254,
+          "mean": 32.2139617111652,
+          "std": 0.3538735719380242,
+          "min": 28.469223022460938,
+          "max": 35.133819580078125
+        },
+        "length_normalized": {
+          "count": 7254,
+          "mean": 16.1069808555826,
+          "std": 0.1769367859690121,
+          "min": 14.234611511230469,
+          "max": 17.566909790039062
+        },
+        "z_normalized": {
+          "count": 7254,
+          "mean": 22.605276938933528,
+          "std": 0.000001042694793135645,
+          "min": 22.605270385742188,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 5,
+        "count": 7301,
+        "raw_sum": {
+          "count": 7301,
+          "mean": 36.100716058333724,
+          "std": 0.5109712884241799,
+          "min": 32.45953369140625,
+          "max": 38.807796478271484
+        },
+        "length_normalized": {
+          "count": 7301,
+          "mean": 16.144730831789424,
+          "std": 0.22851328795246895,
+          "min": 14.516343116760254,
+          "max": 17.35537338256836
+        },
+        "z_normalized": {
+          "count": 7301,
+          "mean": 22.605276989489447,
+          "std": 0.0000010768450881692584,
+          "min": 22.60527229309082,
+          "max": 22.605281829833984
+        }
+      },
+      {
+        "byte_length": 6,
+        "count": 6496,
+        "raw_sum": {
+          "count": 6496,
+          "mean": 39.66399420658356,
+          "std": 0.6919219537837066,
+          "min": 36.30127716064453,
+          "max": 45.506080627441406
+        },
+        "length_normalized": {
+          "count": 6496,
+          "mean": 16.19275717987803,
+          "std": 0.28247595172944195,
+          "min": 14.819934844970703,
+          "max": 18.577777862548828
+        },
+        "z_normalized": {
+          "count": 6496,
+          "mean": 22.605277090824295,
+          "std": 0.000001136122465202829,
+          "min": 22.60527229309082,
+          "max": 22.605281829833984
+        }
+      },
+      {
+        "byte_length": 7,
+        "count": 5914,
+        "raw_sum": {
+          "count": 5914,
+          "mean": 43.01647421198597,
+          "std": 0.8491193531627229,
+          "min": 37.43119430541992,
+          "max": 49.422481536865234
+        },
+        "length_normalized": {
+          "count": 5914,
+          "mean": 16.25869998748052,
+          "std": 0.32093696726349696,
+          "min": 14.147662162780762,
+          "max": 18.679943084716797
+        },
+        "z_normalized": {
+          "count": 5914,
+          "mean": 22.60527721401159,
+          "std": 0.0000011583000558211564,
+          "min": 22.60527229309082,
+          "max": 22.605283737182617
+        }
+      },
+      {
+        "byte_length": 8,
+        "count": 5055,
+        "raw_sum": {
+          "count": 5055,
+          "mean": 46.14028551609179,
+          "std": 0.9976713316103195,
+          "min": 40.89649963378906,
+          "max": 54.458675384521484
+        },
+        "length_normalized": {
+          "count": 5055,
+          "mean": 16.313054118925223,
+          "std": 0.3527300909229393,
+          "min": 14.45909595489502,
+          "max": 19.25404930114746
+        },
+        "z_normalized": {
+          "count": 5055,
+          "mean": 22.60527730313536,
+          "std": 0.0000011812884821475014,
+          "min": 22.60527229309082,
+          "max": 22.605283737182617
+        }
+      },
+      {
+        "byte_length": 9,
+        "count": 3848,
+        "raw_sum": {
+          "count": 3848,
+          "mean": 48.943328522347116,
+          "std": 0.9816724657892006,
+          "min": 44.272029876708984,
+          "max": 56.70110321044922
+        },
+        "length_normalized": {
+          "count": 3848,
+          "mean": 16.314443289614022,
+          "std": 0.32722416013069366,
+          "min": 14.757343292236328,
+          "max": 18.90036964416504
+        },
+        "z_normalized": {
+          "count": 3848,
+          "mean": 22.605277342013164,
+          "std": 0.0000011664369411326225,
+          "min": 22.605274200439453,
+          "max": 22.605283737182617
+        }
+      },
+      {
+        "byte_length": 10,
+        "count": 2813,
+        "raw_sum": {
+          "count": 2813,
+          "mean": 51.70904251217969,
+          "std": 1.1402294988453585,
+          "min": 45.61045455932617,
+          "max": 56.90196990966797
+        },
+        "length_normalized": {
+          "count": 2813,
+          "mean": 16.351834887081814,
+          "std": 0.3605722176458296,
+          "min": 14.423293113708496,
+          "max": 17.99398422241211
+        },
+        "z_normalized": {
+          "count": 2813,
+          "mean": 22.605277376415632,
+          "std": 0.000001211529601969672,
+          "min": 22.605274200439453,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 11,
+        "count": 1924,
+        "raw_sum": {
+          "count": 1924,
+          "mean": 54.23941548202737,
+          "std": 1.1865725476495355,
+          "min": 47.50492477416992,
+          "max": 61.28350067138672
+        },
+        "length_normalized": {
+          "count": 1924,
+          "mean": 16.35379925934044,
+          "std": 0.3577650772622998,
+          "min": 14.323274612426758,
+          "max": 18.477670669555664
+        },
+        "z_normalized": {
+          "count": 1924,
+          "mean": 22.605277384641017,
+          "std": 0.0000011830054390139685,
+          "min": 22.605270385742188,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 12,
+        "count": 1133,
+        "raw_sum": {
+          "count": 1133,
+          "mean": 56.456286377330215,
+          "std": 1.4476805391144465,
+          "min": 46.78121566772461,
+          "max": 63.47650909423828
+        },
+        "length_normalized": {
+          "count": 1133,
+          "mean": 16.297525793918968,
+          "std": 0.4179093521273021,
+          "min": 13.504573822021484,
+          "max": 18.32408905029297
+        },
+        "z_normalized": {
+          "count": 1133,
+          "mean": 22.605277260951205,
+          "std": 0.0000012508556428978469,
+          "min": 22.605268478393555,
+          "max": 22.605281829833984
+        }
+      },
+      {
+        "byte_length": 13,
+        "count": 614,
+        "raw_sum": {
+          "count": 614,
+          "mean": 58.79000000844949,
+          "std": 1.529492849019097,
+          "min": 52.108280181884766,
+          "max": 64.03514099121094
+        },
+        "length_normalized": {
+          "count": 614,
+          "mean": 16.305412238117928,
+          "std": 0.42420502448221975,
+          "min": 14.45223617553711,
+          "max": 17.76015281677246
+        },
+        "z_normalized": {
+          "count": 614,
+          "mean": 22.605277266486848,
+          "std": 0.0000012335692793194229,
+          "min": 22.60527229309082,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 14,
+        "count": 336,
+        "raw_sum": {
+          "count": 336,
+          "mean": 61.03948710078285,
+          "std": 1.712185536078355,
+          "min": 54.75794219970703,
+          "max": 66.38739013671875
+        },
+        "length_normalized": {
+          "count": 336,
+          "mean": 16.31348871049427,
+          "std": 0.45760074830343606,
+          "min": 14.634675979614258,
+          "max": 17.74277687072754
+        },
+        "z_normalized": {
+          "count": 336,
+          "mean": 22.60527723743802,
+          "std": 0.0000012640751070907332,
+          "min": 22.60527229309082,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 15,
+        "count": 129,
+        "raw_sum": {
+          "count": 129,
+          "mean": 62.861978989238885,
+          "std": 1.7655203036864786,
+          "min": 58.080482482910156,
+          "max": 66.28831481933594
+        },
+        "length_normalized": {
+          "count": 129,
+          "mean": 16.230893016785615,
+          "std": 0.4558554331567568,
+          "min": 14.996315002441406,
+          "max": 17.115570068359375
+        },
+        "z_normalized": {
+          "count": 129,
+          "mean": 22.605277231497357,
+          "std": 0.0000013615434218249805,
+          "min": 22.605274200439453,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 16,
+        "count": 58,
+        "raw_sum": {
+          "count": 58,
+          "mean": 65.21149451157143,
+          "std": 1.500537983614049,
+          "min": 61.482730865478516,
+          "max": 69.37218475341797
+        },
+        "length_normalized": {
+          "count": 58,
+          "mean": 16.302873627892858,
+          "std": 0.3751344959035123,
+          "min": 15.370682716369629,
+          "max": 17.343046188354492
+        },
+        "z_normalized": {
+          "count": 58,
+          "mean": 22.605277225889008,
+          "std": 0.0000010738887656614853,
+          "min": 22.605276107788086,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 17,
+        "count": 16,
+        "raw_sum": {
+          "count": 16,
+          "mean": 68.02371597290039,
+          "std": 2.104755610691215,
+          "min": 64.89441680908203,
+          "max": 73.61822509765625
+        },
+        "length_normalized": {
+          "count": 16,
+          "mean": 16.498175024986267,
+          "std": 0.5104783318432837,
+          "min": 15.739209175109863,
+          "max": 17.855043411254883
+        },
+        "z_normalized": {
+          "count": 16,
+          "mean": 22.60527753829956,
+          "std": 0.000001633355786471701,
+          "min": 22.605276107788086,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 18,
+        "count": 11,
+        "raw_sum": {
+          "count": 11,
+          "mean": 69.9087406505238,
+          "std": 1.5505028706826176,
+          "min": 67.19560241699219,
+          "max": 72.7129898071289
+        },
+        "length_normalized": {
+          "count": 11,
+          "mean": 16.477649081837047,
+          "std": 0.36545758785054017,
+          "min": 15.838154792785645,
+          "max": 17.13861656188965
+        },
+        "z_normalized": {
+          "count": 11,
+          "mean": 22.6052773215554,
+          "std": 0.0000015431210230939684,
+          "min": 22.605274200439453,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 19,
+        "count": 6,
+        "raw_sum": {
+          "count": 6,
+          "mean": 71.615540822347,
+          "std": 1.2990006594271166,
+          "min": 70.56272888183594,
+          "max": 73.51372528076172
+        },
+        "length_normalized": {
+          "count": 6,
+          "mean": 16.429731369018555,
+          "std": 0.29801118261074755,
+          "min": 16.188199996948242,
+          "max": 16.865203857421875
+        },
+        "z_normalized": {
+          "count": 6,
+          "mean": 22.605277061462402,
+          "std": 0.0000010446978712180444,
+          "min": 22.605276107788086,
+          "max": 22.60527801513672
+        }
+      },
+      {
+        "byte_length": 20,
+        "count": 1,
+        "raw_sum": {
+          "count": 1,
+          "mean": 72.89859771728516,
+          "std": 0,
+          "min": 72.89859771728516,
+          "max": 72.89859771728516
+        },
+        "length_normalized": {
+          "count": 1,
+          "mean": 16.300622940063477,
+          "std": 0,
+          "min": 16.300622940063477,
+          "max": 16.300622940063477
+        },
+        "z_normalized": {
+          "count": 1,
+          "mean": 22.60527801513672,
+          "std": 0,
+          "min": 22.60527801513672,
+          "max": 22.60527801513672
+        }
+      },
+      {
+        "byte_length": 21,
+        "count": 3,
+        "raw_sum": {
+          "count": 3,
+          "mean": 77.28664906819661,
+          "std": 2.134258154886309,
+          "min": 74.95458221435547,
+          "max": 79.1427230834961
+        },
+        "length_normalized": {
+          "count": 3,
+          "mean": 16.865327835083008,
+          "std": 0.4657323246534102,
+          "min": 16.356430053710938,
+          "max": 17.270355224609375
+        },
+        "z_normalized": {
+          "count": 3,
+          "mean": 22.60527801513672,
+          "std": 0.0000019073486328125,
+          "min": 22.605276107788086,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 23,
+        "count": 1,
+        "raw_sum": {
+          "count": 1,
+          "mean": 77.25530242919922,
+          "std": 0,
+          "min": 77.25530242919922,
+          "max": 77.25530242919922
+        },
+        "length_normalized": {
+          "count": 1,
+          "mean": 16.108842849731445,
+          "std": 0,
+          "min": 16.108842849731445,
+          "max": 16.108842849731445
+        },
+        "z_normalized": {
+          "count": 1,
+          "mean": 22.605276107788086,
+          "std": 0,
+          "min": 22.605276107788086,
+          "max": 22.605276107788086
+        }
+      },
+      {
+        "byte_length": 24,
+        "count": 8,
+        "raw_sum": {
+          "count": 8,
+          "mean": 81.1451358795166,
+          "std": 0.9088502816596494,
+          "min": 80.34428405761719,
+          "max": 82.64642333984375
+        },
+        "length_normalized": {
+          "count": 8,
+          "mean": 16.563680171966553,
+          "std": 0.1855186674891326,
+          "min": 16.400205612182617,
+          "max": 16.87013053894043
+        },
+        "z_normalized": {
+          "count": 8,
+          "mean": 22.60527777671814,
+          "std": 6.743495761743046e-7,
+          "min": 22.605276107788086,
+          "max": 22.60527801513672
+        }
+      },
+      {
+        "byte_length": 25,
+        "count": 1,
+        "raw_sum": {
+          "count": 1,
+          "mean": 84.66743469238281,
+          "std": 0,
+          "min": 84.66743469238281,
+          "max": 84.66743469238281
+        },
+        "length_normalized": {
+          "count": 1,
+          "mean": 16.933486938476562,
+          "std": 0,
+          "min": 16.933486938476562,
+          "max": 16.933486938476562
+        },
+        "z_normalized": {
+          "count": 1,
+          "mean": 22.60527801513672,
+          "std": 0,
+          "min": 22.60527801513672,
+          "max": 22.60527801513672
+        }
+      },
+      {
+        "byte_length": 32,
+        "count": 11,
+        "raw_sum": {
+          "count": 11,
+          "mean": 96.37541476162997,
+          "std": 1.8646173069306096,
+          "min": 91.09660339355469,
+          "max": 98.3406753540039
+        },
+        "length_normalized": {
+          "count": 11,
+          "mean": 17.036927136507902,
+          "std": 0.32962093779284596,
+          "min": 16.103755950927734,
+          "max": 17.384340286254883
+        },
+        "z_normalized": {
+          "count": 11,
+          "mean": 22.6052790555087,
+          "std": 9.96080337270915e-7,
+          "min": 22.60527801513672,
+          "max": 22.60527992248535
+        }
+      },
+      {
+        "byte_length": 33,
+        "count": 2,
+        "raw_sum": {
+          "count": 2,
+          "mean": 98.60417556762695,
+          "std": 0.0904653443429353,
+          "min": 98.54020690917969,
+          "max": 98.66814422607422
+        },
+        "length_normalized": {
+          "count": 2,
+          "mean": 17.16478443145752,
+          "std": 0.01574876000197471,
+          "min": 17.153648376464844,
+          "max": 17.175920486450195
+        },
+        "z_normalized": {
+          "count": 2,
+          "mean": 22.60527801513672,
+          "std": 0,
+          "min": 22.60527801513672,
+          "max": 22.60527801513672
+        }
+      },
+      {
+        "byte_length": 34,
+        "count": 1,
+        "raw_sum": {
+          "count": 1,
+          "mean": 100.76605224609375,
+          "std": 0,
+          "min": 100.76605224609375,
+          "max": 100.76605224609375
+        },
+        "length_normalized": {
+          "count": 1,
+          "mean": 17.28123664855957,
+          "std": 0,
+          "min": 17.28123664855957,
+          "max": 17.28123664855957
+        },
+        "z_normalized": {
+          "count": 1,
+          "mean": 22.60527801513672,
+          "std": 0,
+          "min": 22.60527801513672,
+          "max": 22.60527801513672
+        }
+      },
+      {
+        "byte_length": 48,
+        "count": 2,
+        "raw_sum": {
+          "count": 2,
+          "mean": 127.15780639648438,
+          "std": 0.03578908070672269,
+          "min": 127.13249969482422,
+          "max": 127.18311309814453
+        },
+        "length_normalized": {
+          "count": 2,
+          "mean": 18.35364818572998,
+          "std": 0.005166866452647521,
+          "min": 18.349994659423828,
+          "max": 18.357301712036133
+        },
+        "z_normalized": {
+          "count": 2,
+          "mean": 22.605280876159668,
+          "std": 0.0000013486991523486091,
+          "min": 22.60527992248535,
+          "max": 22.605281829833984
+        }
+      },
+      {
+        "byte_length": 56,
+        "count": 1,
+        "raw_sum": {
+          "count": 1,
+          "mean": 141.127685546875,
+          "std": 0,
+          "min": 141.127685546875,
+          "max": 141.127685546875
+        },
+        "length_normalized": {
+          "count": 1,
+          "mean": 18.858980178833008,
+          "std": 0,
+          "min": 18.858980178833008,
+          "max": 18.858980178833008
+        },
+        "z_normalized": {
+          "count": 1,
+          "mean": 22.605281829833984,
+          "std": 0,
+          "min": 22.605281829833984,
+          "max": 22.605281829833984
+        }
+      },
+      {
+        "byte_length": 64,
+        "count": 5,
+        "raw_sum": {
+          "count": 5,
+          "mean": 151.20169677734376,
+          "std": 8.989611859659972,
+          "min": 135.12059020996094,
+          "max": 155.22203063964844
+        },
+        "length_normalized": {
+          "count": 5,
+          "mean": 18.90021209716797,
+          "std": 1.1237014824574965,
+          "min": 16.890073776245117,
+          "max": 19.402753829956055
+        },
+        "z_normalized": {
+          "count": 5,
+          "mean": 22.60528221130371,
+          "std": 0.000001595802357738639,
+          "min": 22.60527992248535,
+          "max": 22.605283737182617
+        }
+      },
+      {
+        "byte_length": 65,
+        "count": 1,
+        "raw_sum": {
+          "count": 1,
+          "mean": 156.62579345703125,
+          "std": 0,
+          "min": 156.62579345703125,
+          "max": 156.62579345703125
+        },
+        "length_normalized": {
+          "count": 1,
+          "mean": 19.427040100097656,
+          "std": 0,
+          "min": 19.427040100097656,
+          "max": 19.427040100097656
+        },
+        "z_normalized": {
+          "count": 1,
+          "mean": 22.605281829833984,
+          "std": 0,
+          "min": 22.605281829833984,
+          "max": 22.605281829833984
+        }
+      },
+      {
+        "byte_length": 66,
+        "count": 1,
+        "raw_sum": {
+          "count": 1,
+          "mean": 158.427490234375,
+          "std": 0,
+          "min": 158.427490234375,
+          "max": 158.427490234375
+        },
+        "length_normalized": {
+          "count": 1,
+          "mean": 19.501075744628906,
+          "std": 0,
+          "min": 19.501075744628906,
+          "max": 19.501075744628906
+        },
+        "z_normalized": {
+          "count": 1,
+          "mean": 22.605281829833984,
+          "std": 0,
+          "min": 22.605281829833984,
+          "max": 22.605281829833984
+        }
+      },
+      {
+        "byte_length": 128,
+        "count": 1,
+        "raw_sum": {
+          "count": 1,
+          "mean": 195.9716033935547,
+          "std": 0,
+          "min": 195.9716033935547,
+          "max": 195.9716033935547
+        },
+        "length_normalized": {
+          "count": 1,
+          "mean": 17.321605682373047,
+          "std": 0,
+          "min": 17.321605682373047,
+          "max": 17.321605682373047
+        },
+        "z_normalized": {
+          "count": 1,
+          "mean": 22.60527801513672,
+          "std": 0,
+          "min": 22.60527801513672,
+          "max": 22.60527801513672
+        }
+      }
+    ]
+  },
+  "collisions": {
+    "exact": {
+      "rounding_decimals": null,
+      "collision_groups": 0,
+      "tokens_in_collision_groups": 0,
+      "examples": []
+    },
+    "quantized_4dp": {
+      "rounding_decimals": 4,
+      "collision_groups": 0,
+      "tokens_in_collision_groups": 0,
+      "examples": []
+    }
+  },
+  "nearest_neighbors": {
+    "analyzed_tokens": 10000,
+    "distinct_byte_strings": 9854,
+    "nearest_distinct_cosine": {
+      "summary": {
+        "count": 10000,
+        "mean": 0.8326739579312503,
+        "std": 0.08406969687986342,
+        "min": 0.1127125695347786,
+        "max": 0.9665593504905701
+      },
+      "quantiles": {
+        "0.0": 0.1127125695347786,
+        "0.5": 0.8460045456886292,
+        "0.9": 0.9212571382522583,
+        "0.99": 0.9543699026107788,
+        "0.999": 0.9625905474424362,
+        "1.0": 0.9665593504905701
+      },
+      "worst_pairs": [
+        {
+          "cosine": 0.9665593504905701,
+          "left": {
+            "token_id": 2776,
+            "text": " relationship",
+            "bytes_hex": "2072656c6174696f6e73686970",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 6958,
+            "text": " relationships",
+            "bytes_hex": "2072656c6174696f6e7368697073",
+            "byte_length": 14
+          }
+        },
+        {
+          "cosine": 0.966139554977417,
+          "left": {
+            "token_id": 8062,
+            "text": " communications",
+            "bytes_hex": "20636f6d6d756e69636174696f6e73",
+            "byte_length": 15
+          },
+          "right": {
+            "token_id": 6946,
+            "text": " communication",
+            "bytes_hex": "20636f6d6d756e69636174696f6e",
+            "byte_length": 14
+          }
+        },
+        {
+          "cosine": 0.9657568335533142,
+          "left": {
+            "token_id": 4009,
+            "text": " organization",
+            "bytes_hex": "206f7267616e697a6174696f6e",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 5745,
+            "text": " organizations",
+            "bytes_hex": "206f7267616e697a6174696f6e73",
+            "byte_length": 14
+          }
+        },
+        {
+          "cosine": 0.962692141532898,
+          "left": {
+            "token_id": 9025,
+            "text": " improvement",
+            "bytes_hex": "20696d70726f76656d656e74",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 8561,
+            "text": " improvements",
+            "bytes_hex": "20696d70726f76656d656e7473",
+            "byte_length": 13
+          }
+        },
+        {
+          "cosine": 0.962622344493866,
+          "left": {
+            "token_id": 9079,
+            "text": " requirement",
+            "bytes_hex": "20726571756972656d656e74",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 5359,
+            "text": " requirements",
+            "bytes_hex": "20726571756972656d656e7473",
+            "byte_length": 13
+          }
+        },
+        {
+          "cosine": 0.9625905156135559,
+          "left": {
+            "token_id": 8945,
+            "text": " transactions",
+            "bytes_hex": "207472616e73616374696f6e73",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 8611,
+            "text": " transaction",
+            "bytes_hex": "207472616e73616374696f6e",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9617779850959778,
+          "left": {
+            "token_id": 5479,
+            "text": " applications",
+            "bytes_hex": "206170706c69636174696f6e73",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 3586,
+            "text": " application",
+            "bytes_hex": "206170706c69636174696f6e",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9617230892181396,
+          "left": {
+            "token_id": 6712,
+            "text": " institutions",
+            "bytes_hex": "20696e737469747574696f6e73",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 9901,
+            "text": " institution",
+            "bytes_hex": "20696e737469747574696f6e",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9617111086845398,
+          "left": {
+            "token_id": 9001,
+            "text": " regulation",
+            "bytes_hex": "20726567756c6174696f6e",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 6647,
+            "text": " regulations",
+            "bytes_hex": "20726567756c6174696f6e73",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9613502025604248,
+          "left": {
+            "token_id": 3925,
+            "text": " individuals",
+            "bytes_hex": "20696e646976696475616c73",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 1981,
+            "text": " individual",
+            "bytes_hex": "20696e646976696475616c",
+            "byte_length": 11
+          }
+        },
+        {
+          "cosine": 0.960777997970581,
+          "left": {
+            "token_id": 3265,
+            "text": " population",
+            "bytes_hex": "20706f70756c6174696f6e",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 9684,
+            "text": " populations",
+            "bytes_hex": "20706f70756c6174696f6e73",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9603074789047241,
+          "left": {
+            "token_id": 4734,
+            "text": " Republicans",
+            "bytes_hex": "2052657075626c6963616e73",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 3415,
+            "text": " Republican",
+            "bytes_hex": "2052657075626c6963616e",
+            "byte_length": 11
+          }
+        },
+        {
+          "cosine": 0.9600049257278442,
+          "left": {
+            "token_id": 3580,
+            "text": " difference",
+            "bytes_hex": "20646966666572656e6365",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 5400,
+            "text": " differences",
+            "bytes_hex": "20646966666572656e636573",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9599965810775757,
+          "left": {
+            "token_id": 2828,
+            "text": " officials",
+            "bytes_hex": "206f6666696369616c73",
+            "byte_length": 10
+          },
+          "right": {
+            "token_id": 1743,
+            "text": " official",
+            "bytes_hex": "206f6666696369616c",
+            "byte_length": 9
+          }
+        },
+        {
+          "cosine": 0.959437370300293,
+          "left": {
+            "token_id": 6905,
+            "text": " governments",
+            "bytes_hex": "20676f7665726e6d656e7473",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 1230,
+            "text": " government",
+            "bytes_hex": "20676f7665726e6d656e74",
+            "byte_length": 11
+          }
+        },
+        {
+          "cosine": 0.9594346880912781,
+          "left": {
+            "token_id": 4637,
+            "text": " connection",
+            "bytes_hex": "20636f6e6e656374696f6e",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 8787,
+            "text": " connections",
+            "bytes_hex": "20636f6e6e656374696f6e73",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9591919183731079,
+          "left": {
+            "token_id": 1998,
+            "text": " experience",
+            "bytes_hex": "20657870657269656e6365",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 6461,
+            "text": " experiences",
+            "bytes_hex": "20657870657269656e636573",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9591076374053955,
+          "left": {
+            "token_id": 5114,
+            "text": " discussion",
+            "bytes_hex": "2064697363757373696f6e",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 9984,
+            "text": " discussions",
+            "bytes_hex": "2064697363757373696f6e73",
+            "byte_length": 12
+          }
+        },
+        {
+          "cosine": 0.9588081240653992,
+          "left": {
+            "token_id": 5924,
+            "text": " experienced",
+            "bytes_hex": "20657870657269656e636564",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 1998,
+            "text": " experience",
+            "bytes_hex": "20657870657269656e6365",
+            "byte_length": 11
+          }
+        },
+        {
+          "cosine": 0.9583892822265625,
+          "left": {
+            "token_id": 4540,
+            "text": " candidate",
+            "bytes_hex": "2063616e646964617465",
+            "byte_length": 10
+          },
+          "right": {
+            "token_id": 5871,
+            "text": " candidates",
+            "bytes_hex": "2063616e64696461746573",
+            "byte_length": 11
+          }
+        }
+      ]
+    },
+    "nearest_distinct_euclidean": {
+      "summary": {
+        "count": 10000,
+        "mean": 12.71470228600502,
+        "std": 3.056797647537516,
+        "min": 5.846052646636963,
+        "max": 30.11320686340332
+      },
+      "quantiles": {
+        "0.0": 5.846052646636963,
+        "0.001": 6.183214884281158,
+        "0.01": 6.828902721405029,
+        "0.1": 8.970784187316895,
+        "0.5": 12.545238971710205,
+        "1.0": 30.11320686340332
+      },
+      "closest_pairs": [
+        {
+          "euclidean": 5.846052646636963,
+          "left": {
+            "token_id": 2776,
+            "text": " relationship",
+            "bytes_hex": "2072656c6174696f6e73686970",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 6958,
+            "text": " relationships",
+            "bytes_hex": "2072656c6174696f6e7368697073",
+            "byte_length": 14
+          }
+        },
+        {
+          "euclidean": 5.882641315460205,
+          "left": {
+            "token_id": 8062,
+            "text": " communications",
+            "bytes_hex": "20636f6d6d756e69636174696f6e73",
+            "byte_length": 15
+          },
+          "right": {
+            "token_id": 6946,
+            "text": " communication",
+            "bytes_hex": "20636f6d6d756e69636174696f6e",
+            "byte_length": 14
+          }
+        },
+        {
+          "euclidean": 5.915770530700684,
+          "left": {
+            "token_id": 4009,
+            "text": " organization",
+            "bytes_hex": "206f7267616e697a6174696f6e",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 5745,
+            "text": " organizations",
+            "bytes_hex": "206f7267616e697a6174696f6e73",
+            "byte_length": 14
+          }
+        },
+        {
+          "euclidean": 6.174856185913086,
+          "left": {
+            "token_id": 9025,
+            "text": " improvement",
+            "bytes_hex": "20696d70726f76656d656e74",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 8561,
+            "text": " improvements",
+            "bytes_hex": "20696d70726f76656d656e7473",
+            "byte_length": 13
+          }
+        },
+        {
+          "euclidean": 6.180571556091309,
+          "left": {
+            "token_id": 9079,
+            "text": " requirement",
+            "bytes_hex": "20726571756972656d656e74",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 5359,
+            "text": " requirements",
+            "bytes_hex": "20726571756972656d656e7473",
+            "byte_length": 13
+          }
+        },
+        {
+          "euclidean": 6.183217525482178,
+          "left": {
+            "token_id": 8945,
+            "text": " transactions",
+            "bytes_hex": "207472616e73616374696f6e73",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 8611,
+            "text": " transaction",
+            "bytes_hex": "207472616e73616374696f6e",
+            "byte_length": 12
+          }
+        },
+        {
+          "euclidean": 6.250034332275391,
+          "left": {
+            "token_id": 5479,
+            "text": " applications",
+            "bytes_hex": "206170706c69636174696f6e73",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 3586,
+            "text": " application",
+            "bytes_hex": "206170706c69636174696f6e",
+            "byte_length": 12
+          }
+        },
+        {
+          "euclidean": 6.254480838775635,
+          "left": {
+            "token_id": 6712,
+            "text": " institutions",
+            "bytes_hex": "20696e737469747574696f6e73",
+            "byte_length": 13
+          },
+          "right": {
+            "token_id": 9901,
+            "text": " institution",
+            "bytes_hex": "20696e737469747574696f6e",
+            "byte_length": 12
+          }
+        },
+        {
+          "euclidean": 6.255500793457031,
+          "left": {
+            "token_id": 6647,
+            "text": " regulations",
+            "bytes_hex": "20726567756c6174696f6e73",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 9001,
+            "text": " regulation",
+            "bytes_hex": "20726567756c6174696f6e",
+            "byte_length": 11
+          }
+        },
+        {
+          "euclidean": 6.284912109375,
+          "left": {
+            "token_id": 3925,
+            "text": " individuals",
+            "bytes_hex": "20696e646976696475616c73",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 1981,
+            "text": " individual",
+            "bytes_hex": "20696e646976696475616c",
+            "byte_length": 11
+          }
+        },
+        {
+          "euclidean": 6.331249237060547,
+          "left": {
+            "token_id": 3265,
+            "text": " population",
+            "bytes_hex": "20706f70756c6174696f6e",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 9684,
+            "text": " populations",
+            "bytes_hex": "20706f70756c6174696f6e73",
+            "byte_length": 12
+          }
+        },
+        {
+          "euclidean": 6.369123458862305,
+          "left": {
+            "token_id": 4734,
+            "text": " Republicans",
+            "bytes_hex": "2052657075626c6963616e73",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 3415,
+            "text": " Republican",
+            "bytes_hex": "2052657075626c6963616e",
+            "byte_length": 11
+          }
+        },
+        {
+          "euclidean": 6.393355846405029,
+          "left": {
+            "token_id": 3580,
+            "text": " difference",
+            "bytes_hex": "20646966666572656e6365",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 5400,
+            "text": " differences",
+            "bytes_hex": "20646966666572656e636573",
+            "byte_length": 12
+          }
+        },
+        {
+          "euclidean": 6.394005298614502,
+          "left": {
+            "token_id": 2828,
+            "text": " officials",
+            "bytes_hex": "206f6666696369616c73",
+            "byte_length": 10
+          },
+          "right": {
+            "token_id": 1743,
+            "text": " official",
+            "bytes_hex": "206f6666696369616c",
+            "byte_length": 9
+          }
+        },
+        {
+          "euclidean": 6.4385666847229,
+          "left": {
+            "token_id": 6905,
+            "text": " governments",
+            "bytes_hex": "20676f7665726e6d656e7473",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 1230,
+            "text": " government",
+            "bytes_hex": "20676f7665726e6d656e74",
+            "byte_length": 11
+          }
+        },
+        {
+          "euclidean": 6.438775062561035,
+          "left": {
+            "token_id": 4637,
+            "text": " connection",
+            "bytes_hex": "20636f6e6e656374696f6e",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 8787,
+            "text": " connections",
+            "bytes_hex": "20636f6e6e656374696f6e73",
+            "byte_length": 12
+          }
+        },
+        {
+          "euclidean": 6.458003520965576,
+          "left": {
+            "token_id": 1998,
+            "text": " experience",
+            "bytes_hex": "20657870657269656e6365",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 6461,
+            "text": " experiences",
+            "bytes_hex": "20657870657269656e636573",
+            "byte_length": 12
+          }
+        },
+        {
+          "euclidean": 6.464677333831787,
+          "left": {
+            "token_id": 5114,
+            "text": " discussion",
+            "bytes_hex": "2064697363757373696f6e",
+            "byte_length": 11
+          },
+          "right": {
+            "token_id": 9984,
+            "text": " discussions",
+            "bytes_hex": "2064697363757373696f6e73",
+            "byte_length": 12
+          }
+        },
+        {
+          "euclidean": 6.4883036613464355,
+          "left": {
+            "token_id": 5924,
+            "text": " experienced",
+            "bytes_hex": "20657870657269656e636564",
+            "byte_length": 12
+          },
+          "right": {
+            "token_id": 1998,
+            "text": " experience",
+            "bytes_hex": "20657870657269656e6365",
+            "byte_length": 11
+          }
+        },
+        {
+          "euclidean": 6.521205902099609,
+          "left": {
+            "token_id": 4540,
+            "text": " candidate",
+            "bytes_hex": "2063616e646964617465",
+            "byte_length": 10
+          },
+          "right": {
+            "token_id": 5871,
+            "text": " candidates",
+            "bytes_hex": "2063616e64696461746573",
+            "byte_length": 11
+          }
+        }
+      ]
+    },
+    "cosine_self_retrieval_margin": {
+      "summary": {
+        "count": 10000,
+        "mean": 0.16732604207396506,
+        "std": 0.08406969692150076,
+        "min": 0.03344064950942993,
+        "max": 0.887287437915802
+      },
+      "quantiles": {
+        "0.0": 0.03344064950942993,
+        "0.001": 0.03740945255756378,
+        "0.01": 0.04563009738922119,
+        "0.1": 0.0787428617477417,
+        "0.5": 0.15399545431137085,
+        "1.0": 0.887287437915802
+      }
+    },
+    "by_byte_length": [
+      {
+        "byte_length": 1,
+        "count": 128,
+        "nearest_distinct_cosine": {
+          "count": 128,
+          "mean": 0.5591654839809053,
+          "std": 0.23796194040669183,
+          "min": 0.1127125695347786,
+          "max": 0.7716466188430786
+        },
+        "nearest_distinct_euclidean": {
+          "count": 128,
+          "mean": 20.555220410227776,
+          "std": 5.31367101061379,
+          "min": 15.27666187286377,
+          "max": 30.11320686340332
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 128,
+          "mean": 0.440834516659379,
+          "std": 0.237961941103347,
+          "min": 0.2283533811569214,
+          "max": 0.887287437915802
+        }
+      },
+      {
+        "byte_length": 2,
+        "count": 784,
+        "nearest_distinct_cosine": {
+          "count": 784,
+          "mean": 0.7508810484135637,
+          "std": 0.06074634650306829,
+          "min": 0.5035340785980225,
+          "max": 0.8444846868515015
+        },
+        "nearest_distinct_euclidean": {
+          "count": 784,
+          "mean": 15.837441913935603,
+          "std": 1.9439879056059957,
+          "min": 12.606986045837402,
+          "max": 22.525245666503906
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 784,
+          "mean": 0.24911895158643627,
+          "std": 0.06074634650306829,
+          "min": 0.15551531314849854,
+          "max": 0.49646592140197754
+        }
+      },
+      {
+        "byte_length": 3,
+        "count": 1474,
+        "nearest_distinct_cosine": {
+          "count": 1474,
+          "mean": 0.8191822610562983,
+          "std": 0.054955773269473124,
+          "min": 0.34639614820480347,
+          "max": 0.8823527097702026
+        },
+        "nearest_distinct_euclidean": {
+          "count": 1474,
+          "mean": 13.460505446714818,
+          "std": 1.9006425916604572,
+          "min": 10.965179443359375,
+          "max": 25.845333099365234
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 1474,
+          "mean": 0.18081773896392037,
+          "std": 0.05495577341921741,
+          "min": 0.11764729022979736,
+          "max": 0.6536038517951965
+        }
+      },
+      {
+        "byte_length": 4,
+        "count": 1778,
+        "nearest_distinct_cosine": {
+          "count": 1778,
+          "mean": 0.8433068499589261,
+          "std": 0.06204086928168963,
+          "min": 0.5050399303436279,
+          "max": 0.9133602976799011
+        },
+        "nearest_distinct_euclidean": {
+          "count": 1778,
+          "mean": 12.446338526443636,
+          "std": 2.2872565907797022,
+          "min": 9.409866333007812,
+          "max": 22.491056442260742
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 1778,
+          "mean": 0.15669315004107387,
+          "std": 0.06204086928168963,
+          "min": 0.08663970232009888,
+          "max": 0.49496006965637207
+        }
+      },
+      {
+        "byte_length": 5,
+        "count": 1679,
+        "nearest_distinct_cosine": {
+          "count": 1679,
+          "mean": 0.8476002471584732,
+          "std": 0.061521876614200346,
+          "min": 0.5995879173278809,
+          "max": 0.9267640113830566
+        },
+        "nearest_distinct_euclidean": {
+          "count": 1679,
+          "mean": 12.241224261676363,
+          "std": 2.4306494570321493,
+          "min": 8.651426315307617,
+          "max": 20.229188919067383
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 1679,
+          "mean": 0.15239975284152688,
+          "std": 0.061521876614200346,
+          "min": 0.07323598861694336,
+          "max": 0.40041208267211914
+        }
+      },
+      {
+        "byte_length": 6,
+        "count": 1206,
+        "nearest_distinct_cosine": {
+          "count": 1206,
+          "mean": 0.8452231801465574,
+          "std": 0.07167813676782211,
+          "min": 0.5771030783653259,
+          "max": 0.9363851547241211
+        },
+        "nearest_distinct_euclidean": {
+          "count": 1206,
+          "mean": 12.256641338120646,
+          "std": 2.8218454236721806,
+          "min": 8.06314754486084,
+          "max": 20.789409637451172
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 1206,
+          "mean": 0.15477681985344263,
+          "std": 0.07167813676782211,
+          "min": 0.0636148452758789,
+          "max": 0.4228969216346741
+        }
+      },
+      {
+        "byte_length": 7,
+        "count": 1006,
+        "nearest_distinct_cosine": {
+          "count": 1006,
+          "mean": 0.8524819949038223,
+          "std": 0.0730746305984524,
+          "min": 0.5482842922210693,
+          "max": 0.9562089443206787
+        },
+        "nearest_distinct_euclidean": {
+          "count": 1006,
+          "mean": 11.912490544688868,
+          "std": 2.977308788007957,
+          "min": 6.689886093139648,
+          "max": 21.486093521118164
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 1006,
+          "mean": 0.14751800509617768,
+          "std": 0.07307463059845237,
+          "min": 0.04379105567932129,
+          "max": 0.45171570777893066
+        }
+      },
+      {
+        "byte_length": 8,
+        "count": 750,
+        "nearest_distinct_cosine": {
+          "count": 750,
+          "mean": 0.8502151125272115,
+          "std": 0.08343782283276349,
+          "min": 0.5425944328308105,
+          "max": 0.9562089443206787
+        },
+        "nearest_distinct_euclidean": {
+          "count": 750,
+          "mean": 11.895126629511516,
+          "std": 3.406048459132825,
+          "min": 6.689886093139648,
+          "max": 21.620988845825195
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 750,
+          "mean": 0.14978488747278848,
+          "std": 0.0834378228327635,
+          "min": 0.04379105567932129,
+          "max": 0.45740556716918945
+        }
+      },
+      {
+        "byte_length": 9,
+        "count": 507,
+        "nearest_distinct_cosine": {
+          "count": 507,
+          "mean": 0.8569104147145499,
+          "std": 0.08450197555862998,
+          "min": 0.5746711492538452,
+          "max": 0.9599965810775757
+        },
+        "nearest_distinct_euclidean": {
+          "count": 507,
+          "mean": 11.574295554640731,
+          "std": 3.5067183964852537,
+          "min": 6.394005298614502,
+          "max": 20.849098205566406
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 507,
+          "mean": 0.1430895852854501,
+          "std": 0.08450197555862998,
+          "min": 0.040003418922424316,
+          "max": 0.4253288507461548
+        }
+      },
+      {
+        "byte_length": 10,
+        "count": 322,
+        "nearest_distinct_cosine": {
+          "count": 322,
+          "mean": 0.8613448479901189,
+          "std": 0.0843171328902039,
+          "min": 0.5836980938911438,
+          "max": 0.9599965810775757
+        },
+        "nearest_distinct_euclidean": {
+          "count": 322,
+          "mean": 11.370481571055347,
+          "std": 3.529304959369536,
+          "min": 6.394005298614502,
+          "max": 20.626665115356445
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 322,
+          "mean": 0.13865515200988107,
+          "std": 0.0843171328902039,
+          "min": 0.040003418922424316,
+          "max": 0.4163019061088562
+        }
+      },
+      {
+        "byte_length": 11,
+        "count": 193,
+        "nearest_distinct_cosine": {
+          "count": 193,
+          "mean": 0.8536655733004753,
+          "std": 0.08706770829165782,
+          "min": 0.5608615279197693,
+          "max": 0.9617111086845398
+        },
+        "nearest_distinct_euclidean": {
+          "count": 193,
+          "mean": 11.693942774145096,
+          "std": 3.5877258961698444,
+          "min": 6.255505561828613,
+          "max": 21.184865951538086
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 193,
+          "mean": 0.1463344266995247,
+          "std": 0.08706770829165783,
+          "min": 0.038288891315460205,
+          "max": 0.4391384720802307
+        }
+      },
+      {
+        "byte_length": 12,
+        "count": 88,
+        "nearest_distinct_cosine": {
+          "count": 88,
+          "mean": 0.8551569398153912,
+          "std": 0.08529175661823708,
+          "min": 0.6424096822738647,
+          "max": 0.962692141532898
+        },
+        "nearest_distinct_euclidean": {
+          "count": 88,
+          "mean": 11.610768594525076,
+          "std": 3.6566676202424495,
+          "min": 6.174856185913086,
+          "max": 19.116914749145508
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 88,
+          "mean": 0.1448430601846088,
+          "std": 0.08529175661823708,
+          "min": 0.03730785846710205,
+          "max": 0.35759031772613525
+        }
+      },
+      {
+        "byte_length": 13,
+        "count": 44,
+        "nearest_distinct_cosine": {
+          "count": 44,
+          "mean": 0.8306416130878709,
+          "std": 0.11140277263537082,
+          "min": 0.4799211919307709,
+          "max": 0.9665593504905701
+        },
+        "nearest_distinct_euclidean": {
+          "count": 44,
+          "mean": 12.443461992523886,
+          "std": 4.320683311309662,
+          "min": 5.846052646636963,
+          "max": 23.054698944091797
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 44,
+          "mean": 0.16935838623480362,
+          "std": 0.11140277045341127,
+          "min": 0.03344064950942993,
+          "max": 0.5200787782669067
+        }
+      },
+      {
+        "byte_length": 14,
+        "count": 22,
+        "nearest_distinct_cosine": {
+          "count": 22,
+          "mean": 0.8533586886796084,
+          "std": 0.09889426786420644,
+          "min": 0.5805702209472656,
+          "max": 0.9665593504905701
+        },
+        "nearest_distinct_euclidean": {
+          "count": 22,
+          "mean": 11.616214882243764,
+          "std": 3.954937847516749,
+          "min": 5.846052646636963,
+          "max": 20.704011917114258
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 22,
+          "mean": 0.14664131132039157,
+          "std": 0.09889426786420644,
+          "min": 0.03344064950942993,
+          "max": 0.4194297790527344
+        }
+      },
+      {
+        "byte_length": 15,
+        "count": 10,
+        "nearest_distinct_cosine": {
+          "count": 10,
+          "mean": 0.8111948043107986,
+          "std": 0.1412898549850544,
+          "min": 0.48102840781211853,
+          "max": 0.966139554977417
+        },
+        "nearest_distinct_euclidean": {
+          "count": 10,
+          "mean": 13.059940481185913,
+          "std": 4.988466965290833,
+          "min": 5.882641315460205,
+          "max": 23.030139923095703
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 10,
+          "mean": 0.18880519270896912,
+          "std": 0.14128984724704086,
+          "min": 0.03386044502258301,
+          "max": 0.5189715623855591
+        }
+      },
+      {
+        "byte_length": 16,
+        "count": 7,
+        "nearest_distinct_cosine": {
+          "count": 7,
+          "mean": 0.7338930283273969,
+          "std": 0.03394092619367182,
+          "min": 0.7080146074295044,
+          "max": 0.8003128170967102
+        },
+        "nearest_distinct_euclidean": {
+          "count": 7,
+          "mean": 16.46009268079485,
+          "std": 1.0939688954103854,
+          "min": 14.285649299621582,
+          "max": 17.274492263793945
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 7,
+          "mean": 0.26610697167260305,
+          "std": 0.03394092619367182,
+          "min": 0.1996871829032898,
+          "max": 0.2919853925704956
+        }
+      },
+      {
+        "byte_length": 32,
+        "count": 2,
+        "nearest_distinct_cosine": {
+          "count": 2,
+          "mean": 0.7470114231109619,
+          "std": 0.00010823310697597588,
+          "min": 0.7469348907470703,
+          "max": 0.7470879554748535
+        },
+        "nearest_distinct_euclidean": {
+          "count": 2,
+          "mean": 16.079598426818848,
+          "std": 0.0034432289359459987,
+          "min": 16.077163696289062,
+          "max": 16.082033157348633
+        },
+        "cosine_self_retrieval_margin": {
+          "count": 2,
+          "mean": 0.2529885768890381,
+          "std": 0.00010823310697597588,
+          "min": 0.2529120445251465,
+          "max": 0.2530651092529297
+        }
+      }
+    ]
+  },
+  "scope": {
+    "norm_and_collision_tokens": 50257,
+    "nearest_neighbor_tokens": 10000,
+    "nearest_neighbor_selection": "deterministic tokenizer-ID prefix",
+    "duplicate_byte_strings_excluded_from_neighbor_candidates": true
+  },
+  "metric_relationships": {
+    "euclidean_after_z_normalization": {
+      "formula": "distance = sqrt(2 * norm^2 * (1 - cosine)) for equal norms",
+      "interpretation": "Per-token z-normalization makes norms nearly constant, so the reported Euclidean and cosine nearest-neighbor results are not independent evidence."
+    }
+  }
+}

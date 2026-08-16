@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+<title id="title">Fourier-code norm by token byte length</title><desc id="desc">Means for the raw sum, 1/sqrt(L) length normalization, and final per-token z-normalization.</desc>
+<rect width="960" height="560" fill="#ffffff" rx="16"/>
+<text x="60" y="48" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#0f172a">Fourier-code norm by token byte length</text>
+<text x="60" y="76" font-family="system-ui,sans-serif" font-size="14" fill="#475569">Means for the raw sum, 1/sqrt(L) length normalization, and final per-token z-normalization.</text>
+<line x1="80" y1="470" x2="900" y2="470" stroke="#94a3b8"/>
+<line x1="80" y1="110" x2="80" y2="470" stroke="#94a3b8"/>
+<polyline points="86.41,440.61 92.81,428.33 99.22,418.86 105.62,410.82 112.03,403.68 118.44,397.14 124.84,390.98 131.25,385.24 137.66,380.09 144.06,375.01 150.47,370.36 156.88,366.29 163.28,362.00 169.69,357.87 176.09,354.52 182.50,350.21 188.91,345.04 195.31,341.58 201.72,338.44 208.12,336.09 214.53,328.02 227.34,328.08 233.75,320.94 240.16,314.47 285.00,292.96 291.41,288.86 297.81,284.89 387.50,236.41 438.75,210.75 490.00,192.24 496.41,182.28 502.81,178.97 900.00,110.00" fill="none" stroke="#dc2626" stroke-width="3"/>
+<line x1="105" y1="515" x2="135" y2="515" stroke="#dc2626" stroke-width="4"/>
+<text x="143" y="520" font-family="system-ui,sans-serif" font-size="14" fill="#334155">Raw sum</text>
+<polyline points="86.41,440.61 92.81,440.54 99.22,440.47 105.62,440.41 112.03,440.34 118.44,440.25 124.84,440.13 131.25,440.03 137.66,440.03 144.06,439.96 150.47,439.96 156.88,440.06 163.28,440.05 169.69,440.03 176.09,440.18 182.50,440.05 188.91,439.69 195.31,439.73 201.72,439.82 208.12,440.06 214.53,439.02 227.34,440.41 233.75,439.57 240.16,438.89 285.00,438.70 291.41,438.47 297.81,438.25 387.50,436.28 438.75,435.36 490.00,435.28 496.41,434.31 502.81,434.18 900.00,438.18" fill="none" stroke="#f59e0b" stroke-width="3"/>
+<line x1="350" y1="515" x2="380" y2="515" stroke="#f59e0b" stroke-width="4"/>
+<text x="388" y="520" font-family="system-ui,sans-serif" font-size="14" fill="#334155">Length normalized</text>
+<polyline points="86.41,428.47 92.81,428.47 99.22,428.47 105.62,428.47 112.03,428.47 118.44,428.47 124.84,428.47 131.25,428.47 137.66,428.47 144.06,428.47 150.47,428.47 156.88,428.47 163.28,428.47 169.69,428.47 176.09,428.47 182.50,428.47 188.91,428.47 195.31,428.47 201.72,428.47 208.12,428.47 214.53,428.47 227.34,428.47 233.75,428.47 240.16,428.47 285.00,428.47 291.41,428.47 297.81,428.47 387.50,428.47 438.75,428.47 490.00,428.47 496.41,428.47 502.81,428.47 900.00,428.47" fill="none" stroke="#2563eb" stroke-width="3"/>
+<line x1="595" y1="515" x2="625" y2="515" stroke="#2563eb" stroke-width="4"/>
+<text x="633" y="520" font-family="system-ui,sans-serif" font-size="14" fill="#334155">Z-normalized</text>
+<text x="490.0" y="500" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14">Byte length</text>
+<text x="22" y="290.0" transform="rotate(-90 22 290.0)" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14">Mean L2 norm</text>
+<text x="80" y="490" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12">0</text>
+<text x="900" y="490" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12">128</text></svg>

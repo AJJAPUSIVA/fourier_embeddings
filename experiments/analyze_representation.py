@@ -47,17 +47,43 @@ def quantiles(values: torch.Tensor, levels: tuple[float, ...]) -> dict[str, floa
     return {str(level): float(torch.quantile(values, level)) for level in levels}
 
 
-def pearson_correlation(left: torch.Tensor, right: torch.Tensor) -> float | None:
+def pearson_correlation(
+    left: torch.Tensor,
+    right: torch.Tensor,
+    relative_constant_tolerance: float = 1e-6,
+) -> dict[str, object]:
+    """Return a correlation only when both variables have meaningful variance."""
     left = left.detach().cpu().to(torch.float64)
     right = right.detach().cpu().to(torch.float64)
     if left.numel() < 2 or right.numel() != left.numel():
-        return None
-    left = left - left.mean()
-    right = right - right.mean()
-    denominator = left.norm() * right.norm()
+        return {
+            "value": None,
+            "status": "unavailable_insufficient_observations",
+            "relative_constant_tolerance": relative_constant_tolerance,
+        }
+    left_mean = left.mean()
+    right_mean = right.mean()
+    left_centered = left - left_mean
+    right_centered = right - right_mean
+    right_scale = max(abs(float(right_mean)), 1.0)
+    if float(right.std(unbiased=False)) <= relative_constant_tolerance * right_scale:
+        return {
+            "value": None,
+            "status": "unavailable_near_constant_right_variable",
+            "relative_constant_tolerance": relative_constant_tolerance,
+        }
+    denominator = left_centered.norm() * right_centered.norm()
     if denominator == 0:
-        return None
-    return float((left @ right) / denominator)
+        return {
+            "value": None,
+            "status": "unavailable_zero_variance",
+            "relative_constant_tolerance": relative_constant_tolerance,
+        }
+    return {
+        "value": float((left_centered @ right_centered) / denominator),
+        "status": "computed",
+        "relative_constant_tolerance": relative_constant_tolerance,
+    }
 
 
 def norm_analysis(
@@ -348,7 +374,7 @@ def main() -> None:
         args.similarity_block_size,
     )
     report = {
-        "schema_version": 1,
+        "schema_version": 2,
         "tokenizer": args.tokenizer,
         "dimension": args.dimension,
         "analyzed_tokens": len(raw_bytes),
@@ -356,6 +382,15 @@ def main() -> None:
             "raw_sum": {"length_normalize": False, "z_normalize": False},
             "length_normalized": {"length_normalize": True, "z_normalize": False},
             "z_normalized": {"length_normalize": True, "z_normalize": True},
+        },
+        "metric_relationships": {
+            "euclidean_after_z_normalization": {
+                "formula": "distance = sqrt(2 * norm^2 * (1 - cosine)) for equal norms",
+                "interpretation": (
+                    "Per-token z-normalization makes norms nearly constant, so the reported "
+                    "Euclidean and cosine nearest-neighbor results are not independent evidence."
+                ),
+            },
         },
         "norm_analysis": norm_analysis(raw_bytes, stage_codes),
         "collisions": {

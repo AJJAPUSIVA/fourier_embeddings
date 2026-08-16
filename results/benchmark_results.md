@@ -67,6 +67,41 @@ all-pairs cosine analysis covered a deterministic 10,000-token subset.
 | 256 | 0 | 0 | 0 | 0.96910 | 0.03090 |
 | 512 | 0 | 0 | 0 | 0.96656 | 0.03344 |
 
+## Representation diagnostics
+
+The full D=512 diagnostic analyzed norms and collision groups for all 50,257
+GPT-2 token IDs. Its exact all-pairs neighbor search used the same documented
+10,000-token deterministic prefix as the collision report.
+
+| Measurement | Result |
+|---|---:|
+| Exact collision groups, full vocabulary | 0 |
+| Four-decimal collision groups, full vocabulary | 0 |
+| Maximum distinct-token cosine, 10K subset | 0.966559 |
+| Minimum cosine self-retrieval margin | 0.033441 |
+| Minimum distinct Euclidean distance | 5.846053 |
+| Median nearest-distinct cosine | 0.846005 |
+| 99th-percentile nearest-distinct cosine | 0.954370 |
+
+Raw-sum norm was strongly associated with byte length (Pearson r=0.9758).
+Dividing by `sqrt(L)` reduced the measured correlation to 0.3310. Final
+per-token z-normalization made the norm nearly constant at 22.6053, with a
+sample standard deviation of approximately 1.14e-6. The norm-length
+correlation is therefore marked unavailable at that stage instead of reporting
+a floating-point-noise correlation.
+
+![Fourier-code norm by byte length](plots/norm_by_length.svg)
+
+![Nearest-neighbour cosine distribution](plots/nearest_cosine_distribution.svg)
+
+The closest pairs were predominantly orthographic variants such as
+`relationship`/`relationships`, `communication`/`communications`, and
+`organization`/`organizations`. This is evidence of byte-level neighborhood
+continuity, not a semantic-similarity result. Because z-normalization makes
+vector norms nearly equal, Euclidean distance is approximately
+`sqrt(2 * norm^2 * (1 - cosine))`; the Euclidean and cosine measurements are
+therefore not independent evidence.
+
 ## Interpretation limits
 
 - The PASS verdict applies only to the listed thresholds and experiment.
@@ -77,10 +112,18 @@ all-pairs cosine analysis covered a deterministic 10,000-token subset.
 - Runtime results from shared hosted runners are noisy and are not a speed
   guarantee.
 
-Machine-readable values are in [`training_results.json`](training_results.json)
-and [`collision_results.json`](collision_results.json).
-Regenerate the plots with:
+Machine-readable values are in [`training_results.json`](training_results.json),
+[`collision_results.json`](collision_results.json), and
+[`representation_analysis.json`](representation_analysis.json).
+Regenerate the training plots with:
 
 ```bash
 python experiments/plot_benchmarks.py
+```
+
+Regenerate the representation JSON and its plots with:
+
+```bash
+python experiments/analyze_representation.py \
+  --dimension 512 --max-tokens 50257 --near-max-tokens 10000
 ```

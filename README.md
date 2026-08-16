@@ -169,8 +169,11 @@ equivalent to the unchunked formulation; regression tests compare both paths.
 ├── results/
 │   ├── training_results.json
 │   ├── collision_results.json
+│   ├── representation_analysis.json
 │   ├── benchmark_results.md
 │   └── plots/
+│       ├── norm_by_length.svg
+│       └── nearest_cosine_distribution.svg
 └── index.html                 # interactive explanation
 ```
 
